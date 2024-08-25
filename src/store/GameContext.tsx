@@ -9,10 +9,12 @@ export type GameReducerActionType = {
 
 export type GameStateType = {
   selectedCards: CardData[];
+  gameStep?: 'CharacterSelection' | 'PlayerSelection' | 'DayZero' | 'PendingGame'
 }
 
 export const initialState: GameStateType = {
-  selectedCards: []
+  selectedCards: [],
+  gameStep: 'CharacterSelection'
 }
 
 export type GameContextType = {
