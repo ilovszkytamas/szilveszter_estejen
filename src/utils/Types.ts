@@ -37,6 +37,13 @@ export enum Character {
   TESTOR2 = 'TESTOR2'
 }
 
+export enum GameStep {
+  CHARACTER_SELECTION = 'CHARACTER_SELECTION',
+  PLAYER_SELECTION = 'PLAYER_SELECTION',
+  DAY_ZERO = 'DAY_ZERO',
+  PENDING_GAME = 'PENDING_GAME'
+}
+
 export type CardData = {
   faction: Faction,
   character?: string,

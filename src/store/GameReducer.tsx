@@ -15,6 +15,12 @@ export const gameReducer: GameReducerType = (prevState, action) => {
         selectedCards: prevState.selectedCards.filter(item => item.character !== action.payload)
       }
     }
+    case GameAction.CHANGE_GAME_STEP: {
+      return {
+        ...prevState,
+        gameStep: action.payload
+      }
+    }
     default: return prevState;
   }
 }

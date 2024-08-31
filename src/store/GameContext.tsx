@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CardData } from '../utils/Types';
+import { CardData, GameStep } from '../utils/Types';
 import { gameReducer } from './GameReducer';
 
 export type GameReducerActionType = {
@@ -9,12 +9,12 @@ export type GameReducerActionType = {
 
 export type GameStateType = {
   selectedCards: CardData[];
-  gameStep?: 'CharacterSelection' | 'PlayerSelection' | 'DayZero' | 'PendingGame'
+  gameStep: GameStep
 }
 
 export const initialState: GameStateType = {
   selectedCards: [],
-  gameStep: 'CharacterSelection'
+  gameStep: GameStep.CHARACTER_SELECTION
 }
 
 export type GameContextType = {

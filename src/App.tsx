@@ -1,12 +1,13 @@
+import React from 'react';
 import './App.css';
-import CharacterSelectorContainer from './components/CharacterSelectorContainer';
 import { GameContextProvider } from './store/GameContext';
+import MainComponent from './components/MainComponent';
 
 const App: React.FC = () =>  {
   return (
     <div className="App" style={{ maxHeight: '100%', maxWidth: '100%'}}>
       <GameContextProvider>
-        <CharacterSelectorContainer />
+        <MainComponent />
       </GameContextProvider>
     </div>
   );
