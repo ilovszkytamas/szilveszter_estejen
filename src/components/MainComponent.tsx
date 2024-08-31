@@ -17,7 +17,6 @@ const MainComponent: React.FC = () => {
     switch (gameStep) {
       case GameStep.CHARACTER_SELECTION: setCurrentComponent(<CharacterSelectorContainer />); break;
       case GameStep.PLAYER_SELECTION: setCurrentComponent(<PlayerSelector />); break;
-      case GameStep.DAY_ZERO: setCurrentComponent(<div>DAYZERO</div>); break;
       case GameStep.PENDING_GAME: setCurrentComponent(<div>PENDING_GAME</div>); break;
     }
   }

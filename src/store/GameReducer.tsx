@@ -27,6 +27,12 @@ export const gameReducer: GameReducerType = (prevState, action) => {
         selectedCards: prevState.selectedCards.map((card) => card.character === action.payload[0] ? {...card, playerName: action.payload[1]} : card)
       }
     }
+    case GameAction.FINALISE_WELDING: {
+      return {
+        ...prevState,
+        selectedCards: prevState.selectedCards.map((card) => card.character === action.payload[0] || card.character === action.payload[1] ? {...card, isWelded: true} : card)
+      }
+    }
     default: return prevState;
   }
 }

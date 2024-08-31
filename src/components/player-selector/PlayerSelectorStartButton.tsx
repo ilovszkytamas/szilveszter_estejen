@@ -2,29 +2,55 @@ import { Button } from '@material-ui/core';
 import React from 'react';
 import { GameContext } from '../../store/GameContext';
 import { Alert } from '@mui/material';
-import { changeGameStep } from '../../store/GameActions';
-import { GameStep } from '../../utils/Types';
+import { changeGameStep, finaliseWelding } from '../../store/GameActions';
+import { Character } from '../../utils/Types';
 
+interface PlayerSelectorStartButtonProps {
+  hasWelder: boolean
+  weldedPlayers?: Character[]
+}
 
-const PlayerSelectorStartButton: React.FC = () => {
+enum PlayerSelectorStartButtonErrorType {
+  MISSING_PLAYERS,
+  WELDING_ERROR
+}
+
+interface PlayerSelectorStartButtonErrorData {
+  hasError: boolean,
+  errorType?: PlayerSelectorStartButtonErrorType
+}
+
+const PlayerSelectorStartButton: React.FC<PlayerSelectorStartButtonProps> = (props) => {
   const { state, dispatch } = React.useContext(GameContext);
   const { selectedCards } = state;
-  const [hasError, setHasError] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<PlayerSelectorStartButtonErrorData>({hasError: false});
   const [missingCharacters, setMissingCharacters] = React.useState<string[]>([]);
   
   const startGame = () => {
     let cardsWithoutPlayers = selectedCards.filter(card => !card.playerName);
     if (cardsWithoutPlayers.length > 0) {
         setMissingCharacters(cardsWithoutPlayers.map(card => card.character) as string[]);
-        setHasError(true);
-    } else dispatch(changeGameStep(GameStep.DAY_ZERO));
+        setError({hasError: true, errorType: PlayerSelectorStartButtonErrorType.MISSING_PLAYERS});
+    } else if (props.hasWelder && props.weldedPlayers?.length !== 2) {
+      setError({hasError: true, errorType: PlayerSelectorStartButtonErrorType.WELDING_ERROR});
+    } else {
+      setError({hasError: false});
+      if (props.hasWelder) {
+        dispatch(finaliseWelding(props.weldedPlayers as Character[]));
+      }
+    }
   }
 
+  console.log(selectedCards);
+  
   return (
     <>
       <Button variant='contained' onClick={startGame}>START</Button>
-      {hasError && <Alert severity='error'>
+      {error.hasError && error.errorType === PlayerSelectorStartButtonErrorType.MISSING_PLAYERS && <Alert severity='error'>
           Játékosok hiányoznak ezekhez a karakterekhez: {missingCharacters.join(', ')}
+      </Alert>}
+      {error.hasError && error.errorType === PlayerSelectorStartButtonErrorType.WELDING_ERROR && <Alert severity='error'>
+          Hegesztés hiba, jelenleg összehegesztett játékosok: {props?.weldedPlayers?.join(', ')}
       </Alert>}
     </>
   );
