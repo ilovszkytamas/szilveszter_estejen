@@ -1,6 +1,6 @@
 import React from 'react'
 import Card from '@material-ui/core/Card';
-import { CardData } from '../utils/Types';
+import { CardData } from '../../utils/Types';
 
 const PlayerCard: React.FC<CardData> = (cardData) => {
   return (

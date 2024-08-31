@@ -1,10 +1,10 @@
 import { List, ListItem, ListItemText } from '@material-ui/core';
 import React from 'react'
-import { GameContext } from '../store/GameContext';
+import { GameContext } from '../../store/GameContext';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
-import { removeCharacter } from '../store/GameActions';
-import { Faction } from '../utils/Types';
+import { removeCharacter } from '../../store/GameActions';
+import { Faction } from '../../utils/Types';
 
 const SelectedCharacterList: React.FC = () => {
   const { state, dispatch } = React.useContext(GameContext);

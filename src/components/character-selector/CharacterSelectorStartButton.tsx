@@ -1,8 +1,8 @@
 import { Button } from '@material-ui/core';
 import React from 'react';
-import { GameContext } from '../store/GameContext';
-import { changeGameStep } from '../store/GameActions';
-import { Faction, GameStep } from '../utils/Types';
+import { GameContext } from '../../store/GameContext';
+import { changeGameStep } from '../../store/GameActions';
+import { Faction, GameStep } from '../../utils/Types';
 import { Alert } from '@mui/material';
 
 interface StartData {
@@ -10,7 +10,7 @@ interface StartData {
   requirementsByFaction?: [number, number, number]
 }
 
-const StartButton: React.FC = () => {
+const CharacterSelectorStartButton: React.FC = () => {
   const { state, dispatch } = React.useContext(GameContext);
   const [ startData, setStartData] = React.useState<StartData>({ startable: false, requirementsByFaction: [2, 2, 6] });
   const { selectedCards } = state;
@@ -124,4 +124,4 @@ const StartButton: React.FC = () => {
   );
 }
 
-export default StartButton;
+export default CharacterSelectorStartButton;

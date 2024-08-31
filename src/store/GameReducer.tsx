@@ -21,6 +21,12 @@ export const gameReducer: GameReducerType = (prevState, action) => {
         gameStep: action.payload
       }
     }
+    case GameAction.ASSIGN_PLAYER_TO_CHARACTER: {
+      return {
+        ...prevState,
+        selectedCards: prevState.selectedCards.map((card) => card.character === action.payload[0] ? {...card, playerName: action.payload[1]} : card)
+      }
+    }
     default: return prevState;
   }
 }

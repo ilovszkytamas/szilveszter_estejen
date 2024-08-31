@@ -1,12 +1,12 @@
 import { Button, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import React from 'react'
-import { addCharacter } from '../store/GameActions';
-import { GameContext } from '../store/GameContext';
-import { EVIL_CARDS, NEUTRAL_CARDS, VILLAGER_CARDS } from '../utils/DataCollections';
-import { CardData, Faction } from '../utils/Types';
+import { addCharacter } from '../../store/GameActions';
+import { GameContext } from '../../store/GameContext';
+import { EVIL_CARDS, NEUTRAL_CARDS, VILLAGER_CARDS } from '../../utils/DataCollections';
+import { CardData, Faction } from '../../utils/Types';
 import CharacterSelector from './CharacterSelector';
 import SelectedCharacterList from './SelectedCharacterList';
-import StartButton from './StartButton';
+import CharacterSelectorStartButton from './CharacterSelectorStartButton';
 
 const CharacterSelectorContainer: React.FC = () => {
   const [cards, setCards] = React.useState<CardData[]>([]);
@@ -82,7 +82,7 @@ const CharacterSelectorContainer: React.FC = () => {
       </div>
       <div>
         <SelectedCharacterList />
-        <StartButton />
+        <CharacterSelectorStartButton />
       </div>
     </div>
   </div>
