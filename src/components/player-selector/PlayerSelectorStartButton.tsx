@@ -2,8 +2,9 @@ import { Button } from '@material-ui/core';
 import React from 'react';
 import { GameContext } from '../../store/GameContext';
 import { Alert } from '@mui/material';
-import { changeGameStep, finaliseWelding } from '../../store/GameActions';
-import { Character } from '../../utils/Types';
+import { changeGameStep, finaliseWelding, finaliseOrder } from '../../store/GameActions';
+import { INITIAL_ORDER } from '../../utils/DataCollections';
+import { Character, GameStep } from '../../utils/Types';
 
 interface PlayerSelectorStartButtonProps {
   hasWelder: boolean
@@ -25,6 +26,13 @@ const PlayerSelectorStartButton: React.FC<PlayerSelectorStartButtonProps> = (pro
   const { selectedCards } = state;
   const [error, setError] = React.useState<PlayerSelectorStartButtonErrorData>({hasError: false});
   const [missingCharacters, setMissingCharacters] = React.useState<string[]>([]);
+
+  const finaliseOrderBeforeStart = () => {
+    let finalisedOrder = INITIAL_ORDER.filter(card => {
+      return selectedCards.find((selected => selected.character === card.character));
+    })
+    dispatch(finaliseOrder(finalisedOrder));
+  }
   
   const startGame = () => {
     let cardsWithoutPlayers = selectedCards.filter(card => !card.playerName);
@@ -38,10 +46,12 @@ const PlayerSelectorStartButton: React.FC<PlayerSelectorStartButtonProps> = (pro
       if (props.hasWelder) {
         dispatch(finaliseWelding(props.weldedPlayers as Character[]));
       }
+      finaliseOrderBeforeStart();
+      dispatch(changeGameStep(GameStep.PENDING_GAME));
     }
   }
 
-  console.log(selectedCards);
+  console.log(state);
   
   return (
     <>

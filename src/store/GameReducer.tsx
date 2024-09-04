@@ -4,6 +4,8 @@ import { GameReducerType } from "./GameContext";
 export const gameReducer: GameReducerType = (prevState, action) => {
   switch(action.type) {
     case GameAction.ADD_CHARACTER: {
+      //TODO: remove later
+      action.payload.playerName = "lófaszjóska"
       return {
         ...prevState,
         selectedCards: [...prevState.selectedCards, action.payload]
@@ -31,6 +33,12 @@ export const gameReducer: GameReducerType = (prevState, action) => {
       return {
         ...prevState,
         selectedCards: prevState.selectedCards.map((card) => card.character === action.payload[0] || card.character === action.payload[1] ? {...card, isWelded: true} : card)
+      }
+    }
+    case GameAction.FINALISE_ORDER: {
+      return {
+        ...prevState,
+        finalisedOrder: action.payload
       }
     }
     default: return prevState;

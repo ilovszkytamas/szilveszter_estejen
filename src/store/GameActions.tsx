@@ -6,7 +6,8 @@ export enum GameAction {
   REMOVE_CHARACTER = 'REMOVE_CHARACTER',
   CHANGE_GAME_STEP = 'CHANGE_GAME_STEP',
   ASSIGN_PLAYER_TO_CHARACTER = 'ASSIGN_PLAYER_TO_CHARACTER',
-  FINALISE_WELDING = 'FINALISE_WELDING'
+  FINALISE_WELDING = 'FINALISE_WELDING',
+  FINALISE_ORDER = 'FINALISE_ORDER'
 }
 
 export const addCharacter = (payload: CardData): GameReducerActionType => ({
@@ -32,5 +33,10 @@ export const assignPlayerToCharacter = (payload: [Character, string]): GameReduc
 
 export const finaliseWelding = (payload: Character[]): GameReducerActionType => ({
   type: GameAction.FINALISE_WELDING,
+  payload
+})
+
+export const finaliseOrder = (payload: CardData[]): GameReducerActionType => ({
+  type: GameAction.FINALISE_ORDER,
   payload
 })
