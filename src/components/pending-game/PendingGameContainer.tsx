@@ -2,6 +2,7 @@ import { List, ListItem, ListItemText } from '@material-ui/core';
 import React from 'react'
 import { Faction } from '../../utils/Types';
 import { GameContext } from '../../store/GameContext';
+import { StepModal } from './StepModal';
 
 const PendingGameContainer: React.FC = () => {
   const { state, dispatch } = React.useContext(GameContext);
@@ -22,7 +23,8 @@ const PendingGameContainer: React.FC = () => {
   return (
     <>
       <div style={{ width: '80%', marginLeft: '10%' }}>
-        <label>Pending Game</label>
+        <label>DAY 1</label>
+        <StepModal />
         <List>
           {selectedCards.map((card) => {
             return (
@@ -46,18 +48,6 @@ const PendingGameContainer: React.FC = () => {
                   >
                     <ListItemText primary={card.character} />
                     <ListItemText primary={card.playerName} />
-                  </ListItem>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', minWidth: '30%' }}>
-                  <ListItem style={{ marginLeft: '20px', marginRight: '20px', width: '10%' }}
-                    key={card.character}
-                  >
-                    <ListItemText primary={"action1"} />
-                  </ListItem>
-                  <ListItem style={{ marginLeft: '20px', marginRight: '20px', width: '10%' }}
-                    key={card.character}
-                  >
-                    <ListItemText primary={"action2"} />
                   </ListItem>
                 </div>
               </div>

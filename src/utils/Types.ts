@@ -43,11 +43,38 @@ export enum GameStep {
   PENDING_GAME = 'PENDING_GAME'
 }
 
+export enum AbilityType {
+  DONFATER_KILL = 'DONFATER_KILL',
+  TOLVAJ_LOPAS = 'TOLVAJ_LOPAS',
+  //SZIMATOLO_SZIMATOLAS = 'SZIMATOLO_SZIMATOLAS',
+  BOSSZUALLO_KILL = 'BOSSZUALLO_KILL',
+  DOKTOR_GYOGYITAS = 'DOKTOR_GYOGYITAS',
+  //DETEKTIV_NYOMOZAS = 'DETEKTIV_NYOMOZAS',
+  SOFOR_CSERE = 'SOFOR_CSERE',
+  DINOIDOMAR_KILL = 'DINOIDOMAR_KILL',
+  TEKNOS_CIGI = 'TEKNOS_CIGI',
+  TESTOR_VEDES = 'TESTOR_VEDES',
+  DEMOGORGON_KILL = 'DEMOGORGON_KILL',
+  ALKIMISTA_BOMBA = 'ALKIMISTA_BOMBA',
+  ALKIMISTA_GYOGYITAL = 'ALKIMISTA_GYOGYITAL',
+  ALKIMISTA_SZIKLABOR = 'ALKIMISTA_SZIKLABOR',
+  FANATIKUS_KILL = 'FANATIKUS_KILL'
+}
+
+export type CharacterAbility = {
+  abilityType: AbilityType,
+  usageCountTotal: number,
+  previousTarget?: CardData
+}
+
 export type CardData = {
   faction: Faction,
   character: Character,
   playerName?: string,
   isAlive?: boolean,
   imageLocation: string,
-  isWelded?: boolean
+  isWelded?: boolean,
+  abilities?: CharacterAbility[],
+  effects?: AbilityType[],
+  actionDescription?: string
 }

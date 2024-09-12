@@ -13,14 +13,14 @@ const MainComponent: React.FC = () => {
   const [currentComponent, setCurrentComponent] = React.useState<React.ReactElement>();
   console.log(EVERY_CARD)
 
- /* React.useEffect(() => {
+  React.useEffect(() => {
     if (state.selectedCards.length <= 0) {
       EVERY_CARD.forEach((card) => dispatch(addCharacter(card)))
     }
-  }, [])*/
+  }, [])
 
   React.useEffect(() => {
-    setComponentByGameStep(gameStep);
+    setComponentByGameStep(GameStep.PENDING_GAME);
   }, [gameStep])
 
   const setComponentByGameStep = (gameStep: GameStep): void => {
