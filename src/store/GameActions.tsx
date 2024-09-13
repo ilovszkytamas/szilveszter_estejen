@@ -1,4 +1,4 @@
-import { CardData, Character, GameStep } from "../utils/Types";
+import { AbilityType, CardData, Character, GameStep } from "../utils/Types";
 import { GameReducerActionType } from "./GameContext";
 
 export enum GameAction {
@@ -7,7 +7,8 @@ export enum GameAction {
   CHANGE_GAME_STEP = 'CHANGE_GAME_STEP',
   ASSIGN_PLAYER_TO_CHARACTER = 'ASSIGN_PLAYER_TO_CHARACTER',
   FINALISE_WELDING = 'FINALISE_WELDING',
-  FINALISE_ORDER = 'FINALISE_ORDER'
+  FINALISE_ORDER = 'FINALISE_ORDER',
+  HIT_ABILITY = 'HIT_ABILITY'
 }
 
 export const addCharacter = (payload: CardData): GameReducerActionType => ({
@@ -38,5 +39,11 @@ export const finaliseWelding = (payload: Character[]): GameReducerActionType => 
 
 export const finaliseOrder = (payload: CardData[]): GameReducerActionType => ({
   type: GameAction.FINALISE_ORDER,
+  payload
+})
+
+//payload: [initiator, effect, target]
+export const hitAbility = (payload: [Character, AbilityType, Character]): GameReducerActionType => ({
+  type: GameAction.HIT_ABILITY,
   payload
 })

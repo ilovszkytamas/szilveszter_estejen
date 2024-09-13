@@ -1,3 +1,4 @@
+import { AbilityType, CardData, Character } from "../utils/Types";
 import { GameAction } from "./GameActions";
 import { GameReducerType } from "./GameContext";
 
@@ -41,6 +42,20 @@ export const gameReducer: GameReducerType = (prevState, action) => {
         finalisedOrder: action.payload
       }
     }
+    case GameAction.HIT_ABILITY: {
+      return {
+        ...prevState,
+        selectedCards: handleAbility(action.payload[0], action.payload[1], action.payload[2], prevState.selectedCards)
+      }
+    }
     default: return prevState;
   }
+}
+
+const handleAbility = (initiator: Character, ability: AbilityType, target: Character, selectedCards: CardData[]) => {
+  let tempCards = selectedCards.map((card) => card.character === target ? {...card, effects: [...card.effects, ability]} : card);
+  let usedAbility = selectedCards.find(cards => cards.character === initiator)?.abilities?.find(currentAbility => currentAbility.abilityType === ability);
+  usedAbility!.usageCountTotal = usedAbility!.usageCountTotal + 1;
+  
+  return tempCards;
 }

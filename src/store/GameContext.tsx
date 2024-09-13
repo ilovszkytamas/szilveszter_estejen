@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { CardData, GameStep } from '../utils/Types';
 import { gameReducer } from './GameReducer';
+import { INITIAL_ORDER } from '../utils/DataCollections';
 
 export type GameReducerActionType = {
   type: string;
@@ -16,7 +17,7 @@ export type GameStateType = {
 export const initialState: GameStateType = {
   selectedCards: [],
   gameStep: GameStep.CHARACTER_SELECTION,
-  finalisedOrder: []
+  finalisedOrder: INITIAL_ORDER
 }
 
 export type GameContextType = {

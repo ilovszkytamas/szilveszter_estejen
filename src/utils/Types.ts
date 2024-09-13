@@ -67,14 +67,15 @@ export type CharacterAbility = {
   previousTarget?: CardData
 }
 
+//TODO: refactor this shit, use polimorphism
 export type CardData = {
   faction: Faction,
   character: Character,
   playerName?: string,
-  isAlive?: boolean,
+  isAlive: boolean,
   imageLocation: string,
   isWelded?: boolean,
   abilities?: CharacterAbility[],
-  effects?: AbilityType[],
+  effects: AbilityType[],
   actionDescription?: string
 }
