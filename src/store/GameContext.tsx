@@ -5,7 +5,7 @@ import { INITIAL_ORDER } from '../utils/DataCollections';
 
 export type GameReducerActionType = {
   type: string;
-  payload: any;
+  payload?: any;
 }
 
 export type GameStateType = {

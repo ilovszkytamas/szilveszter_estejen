@@ -48,6 +48,17 @@ export const gameReducer: GameReducerType = (prevState, action) => {
         selectedCards: handleAbility(action.payload[0], action.payload[1], action.payload[2], prevState.selectedCards)
       }
     }
+    case GameAction.RESET_EFFECTS: {
+      return {
+        ...prevState,
+        selectedCards: prevState.selectedCards.map((card) => {
+          return {
+            ...card,
+            effects: []
+          }
+        })
+      }
+    }
     default: return prevState;
   }
 }

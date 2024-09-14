@@ -8,8 +8,13 @@ enum ModalState {
   PENDING_NIGHT = 'PENDING_NIGHT',
   CONCLUDE_NIGHT = 'CONCLUDE_NIGHT'
 }
+
+interface StepModalProps {
+  onWakeUp(): void
+}
+
 //TODO: this whole shit gotta go
-export const StepModal: React.FC = () => {
+export const StepModal: React.FC<StepModalProps> = (props) => {
   const [isModalOpen, setModalOpen] = React.useState<boolean>(false);
   const { state, dispatch } = React.useContext(GameContext);
   const { finalisedOrder, selectedCards } = state;
@@ -25,7 +30,7 @@ export const StepModal: React.FC = () => {
   const handleOpen = () => {
     setModalOpen(true);
   }
-  console.log(selectedCards);
+  
   const handleClose = () => {
     setModalOpen(false);
   }
@@ -90,7 +95,8 @@ export const StepModal: React.FC = () => {
   }
 
   const handleWakeUp = () => {
-    
+    setModalOpen(false);
+    props.onWakeUp();
   }
 
   const isAbilityButtonDisabled = (characterAbility: CharacterAbility): boolean => {
@@ -143,11 +149,11 @@ export const StepModal: React.FC = () => {
           {
             currentModalState === ModalState.PENDING_NIGHT && <>
               <Typography id="modal-modal-title" variant="h6" component="h2" style={{ textAlign: 'center', marginBottom: '30px' }}>
-                {finalisedOrder[currentIndex].actionDescription}
+                {finalisedOrder[currentIndex].isAlive ? "[ÉLŐ]" : "[DEAD]"} {finalisedOrder[currentIndex].actionDescription}
               </Typography>
               <Typography id="modal-modal-description" style={{ display: 'flex' }}>
                 {finalisedOrder[currentIndex].abilities?.map((ability) => {
-                  return (<Button disabled={isAbilityButtonDisabled(ability)} onClick={() => handleCharacterAction(ability.abilityType)} style={{ backgroundColor: 'black', color: 'white', marginRight: '10px', textDecorationLine: isAbilityButtonDisabled(ability) ? 'line-through' : 'none' }}>{ability.abilityType}</Button>)
+                  return (<Button disabled={!finalisedOrder[currentIndex].isAlive && isAbilityButtonDisabled(ability)} onClick={() => handleCharacterAction(ability.abilityType)} style={{ backgroundColor: 'black', color: 'white', marginRight: '10px', textDecorationLine: !finalisedOrder[currentIndex].isAlive && isAbilityButtonDisabled(ability) ? 'line-through' : 'none' }}>{ability.abilityType}</Button>)
                 })}
               </Typography>
               {isTargetSelectorOpen && <div>
