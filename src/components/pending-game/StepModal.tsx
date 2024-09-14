@@ -3,6 +3,7 @@ import React from 'react';
 import { GameContext } from '../../store/GameContext';
 import { AbilityType, CardData, Character, CharacterAbility } from '../../utils/Types';
 import useCharacterAction from '../../hooks/useCharacterAction';
+import { killCharacter } from '../../store/GameActions';
 
 enum ModalState {
   PENDING_NIGHT = 'PENDING_NIGHT',
@@ -34,7 +35,7 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
   const handleClose = () => {
     setModalOpen(false);
   }
-
+  console.log(finalisedOrder[currentIndex])
   const handleNext = () => {
     if (currentTarget && currentAbility) {
       hitAction(finalisedOrder[currentIndex].character, currentAbility, currentTarget)
@@ -77,7 +78,16 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
       killedCharacters = [...killedCharacters, weldedOtherPair];
     }
 
-    setCurrentKilledCharacters(killedCharacters);
+    const demonDoszpod = killedCharacters.find(character => Character.DEMONDOSZPOD === character.character);
+    if (demonDoszpod && demonDoszpod?.demonDoszpodDeathCount === 0) {
+      demonDoszpod.demonDoszpodDeathCount = 1;
+      // TODO: fix naming here
+      setCurrentKilledCharacters(killedCharacters.filter(character => character.character !== Character.DEMONDOSZPOD));
+    } else {
+      setCurrentKilledCharacters(killedCharacters);
+    }
+
+    killedCharacters.forEach(character => dispatch(killCharacter(character.character)));
   }
 
   const handleCharacterAction = (abilityType: AbilityType) => {
@@ -96,6 +106,7 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
 
   const handleWakeUp = () => {
     setModalOpen(false);
+    setCurrentKilledCharacters(undefined);
     props.onWakeUp();
   }
 
@@ -111,6 +122,10 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
     } else {
       return false;
     }
+  }
+
+  const getCurrentCharacter = (): CardData => {
+    return selectedCards.find(card => card.character == finalisedOrder[currentIndex].character)!;
   }
 
   const style = {
@@ -149,11 +164,11 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
           {
             currentModalState === ModalState.PENDING_NIGHT && <>
               <Typography id="modal-modal-title" variant="h6" component="h2" style={{ textAlign: 'center', marginBottom: '30px' }}>
-                {finalisedOrder[currentIndex].isAlive ? "[ÉLŐ]" : "[DEAD]"} {finalisedOrder[currentIndex].actionDescription}
+                {getCurrentCharacter().isAlive ? "[ÉLŐ]" : "[DEAD]"} {getCurrentCharacter().actionDescription}
               </Typography>
               <Typography id="modal-modal-description" style={{ display: 'flex' }}>
                 {finalisedOrder[currentIndex].abilities?.map((ability) => {
-                  return (<Button disabled={!finalisedOrder[currentIndex].isAlive && isAbilityButtonDisabled(ability)} onClick={() => handleCharacterAction(ability.abilityType)} style={{ backgroundColor: 'black', color: 'white', marginRight: '10px', textDecorationLine: !finalisedOrder[currentIndex].isAlive && isAbilityButtonDisabled(ability) ? 'line-through' : 'none' }}>{ability.abilityType}</Button>)
+                  return (<Button disabled={!getCurrentCharacter().isAlive || isAbilityButtonDisabled(ability)} onClick={() => handleCharacterAction(ability.abilityType)} style={{ backgroundColor: 'black', color: 'white', marginRight: '10px', textDecorationLine: !getCurrentCharacter().isAlive || isAbilityButtonDisabled(ability) ? 'line-through' : 'none' }}>{ability.abilityType}</Button>)
                 })}
               </Typography>
               {isTargetSelectorOpen && <div>

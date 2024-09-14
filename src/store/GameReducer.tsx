@@ -59,6 +59,12 @@ export const gameReducer: GameReducerType = (prevState, action) => {
         })
       }
     }
+    case GameAction.KILL_CHARACTER: {
+      return {
+        ...prevState,
+        selectedCards: prevState.selectedCards.map((card) => card.character === action.payload ? {...card, isAlive: false} : card)
+      }
+    }
     default: return prevState;
   }
 }

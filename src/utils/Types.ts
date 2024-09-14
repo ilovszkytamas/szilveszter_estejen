@@ -77,5 +77,6 @@ export type CardData = {
   isWelded?: boolean,
   abilities?: CharacterAbility[],
   effects: AbilityType[],
-  actionDescription?: string
+  actionDescription?: string,
+  demonDoszpodDeathCount?: number
 }

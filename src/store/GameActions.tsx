@@ -9,7 +9,8 @@ export enum GameAction {
   FINALISE_WELDING = 'FINALISE_WELDING',
   FINALISE_ORDER = 'FINALISE_ORDER',
   HIT_ABILITY = 'HIT_ABILITY',
-  RESET_EFFECTS = 'RESET_EFFECTS'
+  RESET_EFFECTS = 'RESET_EFFECTS',
+  KILL_CHARACTER = 'KILL_CHARACTER'
 }
 
 export const addCharacter = (payload: CardData): GameReducerActionType => ({
@@ -51,4 +52,9 @@ export const hitAbility = (payload: [Character, AbilityType, Character]): GameRe
 
 export const resetEffects = (): GameReducerActionType => ({
   type: GameAction.RESET_EFFECTS,
+})
+
+export const killCharacter = (payload: Character): GameReducerActionType => ({
+  type: GameAction.KILL_CHARACTER,
+  payload
 })

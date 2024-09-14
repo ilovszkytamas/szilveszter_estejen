@@ -3,7 +3,7 @@ import React from 'react'
 import { CardData, Faction } from '../../utils/Types';
 import { GameContext } from '../../store/GameContext';
 import { StepModal } from './StepModal';
-import { resetEffects } from '../../store/GameActions';
+import { killCharacter, resetEffects } from '../../store/GameActions';
 
 enum Time {
   DAY='NAPPAL',
@@ -15,7 +15,8 @@ const PendingGameContainer: React.FC = () => {
   const { selectedCards } = state;
   const [dayCount, setDayCount] = React.useState<number>(1);
   const [time, setTime] = React.useState<Time>(Time.NIGHT);
-
+  const [currentHung, setCurrentHung] = React.useState<CardData>();
+  console.log(state.selectedCards)
   const getBackgroundColor = (card: CardData): string => {
     if (!card.isAlive) {
       return "black";
@@ -38,8 +39,16 @@ const PendingGameContainer: React.FC = () => {
   }
 
   const onSleep = () => {
+    if (currentHung) {
+      dispatch(killCharacter(currentHung.character))
+    }
+    setCurrentHung(undefined);
     setDayCount(dayCount + 1);
     setTime(Time.NIGHT);
+  }
+
+  const onHangClick = (card: CardData) => {
+    setCurrentHung(card);
   }
 
   return (
@@ -72,7 +81,7 @@ const PendingGameContainer: React.FC = () => {
                     <ListItemText primary={card.playerName} />
                   </ListItem>
                 </div>
-                {card.isAlive && time === Time.DAY && <Button style={{backgroundColor: 'black', color: 'white'}}>FELAKASZTÁS</Button>}
+                {card.isAlive && time === Time.DAY && <Button onClick={() => onHangClick(card)} style={{backgroundColor: 'black', color: 'white'}}>FELAKASZTÁS</Button>}
               </div>
             );
           })}
