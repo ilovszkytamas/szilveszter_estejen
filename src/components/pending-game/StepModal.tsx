@@ -125,7 +125,7 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
   }
 
   const getCurrentCharacter = (): CardData => {
-    return selectedCards.find(card => card.character == finalisedOrder[currentIndex].character)!;
+    return selectedCards.find(card => card.character === finalisedOrder[currentIndex].character)!;
   }
 
   const style = {

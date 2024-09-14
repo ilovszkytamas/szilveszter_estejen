@@ -16,7 +16,7 @@ const PendingGameContainer: React.FC = () => {
   const [dayCount, setDayCount] = React.useState<number>(1);
   const [time, setTime] = React.useState<Time>(Time.NIGHT);
   const [currentHung, setCurrentHung] = React.useState<CardData>();
-  console.log(state.selectedCards)
+  
   const getBackgroundColor = (card: CardData): string => {
     if (!card.isAlive) {
       return "black";
