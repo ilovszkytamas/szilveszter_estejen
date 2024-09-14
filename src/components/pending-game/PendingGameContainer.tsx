@@ -41,6 +41,10 @@ const PendingGameContainer: React.FC = () => {
   const onSleep = () => {
     if (currentHung) {
       dispatch(killCharacter(currentHung.character))
+      if (currentHung.isWelded) {
+        const weldedOtherPair = selectedCards.find(card => card.isWelded && card.character !== currentHung.character)!;
+        dispatch(killCharacter(weldedOtherPair.character));
+      }
     }
     setCurrentHung(undefined);
     setDayCount(dayCount + 1);
