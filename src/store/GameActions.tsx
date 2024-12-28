@@ -13,7 +13,8 @@ export enum GameAction {
   KILL_CHARACTER = 'KILL_CHARACTER',
   LOAD_GAME_STATE_FROM_LOCAL_STORAGE = 'LOAD_GAME_STATE_FROM_LOCAL_STORAGE',
   SET_DAY_COUNT = 'SET_DAY_COUNT',
-  SET_TIME_OF_DAY = 'SET_TIME_OF_DAY'
+  SET_TIME_OF_DAY = 'SET_TIME_OF_DAY',
+  SET_DEMON_DOSZPOD_ALREADY_DIED_ONCE_STATUS = 'SET_DEMON_DOSZPOD_ALREADY_DIED_ONCE_STATUS'
 }
 
 export const addCharacter = (payload: CardData): GameReducerActionType => ({
@@ -75,4 +76,8 @@ export const setDayCount = (payload: number): GameReducerActionType => ({
 export const setTimeOfDay = (payload: TimeOfDay): GameReducerActionType => ({
   type: GameAction.SET_TIME_OF_DAY,
   payload
+})
+
+export const setDemonDoszpodAlreadyDiedStatus = (): GameReducerActionType => ({
+  type: GameAction.SET_DEMON_DOSZPOD_ALREADY_DIED_ONCE_STATUS
 })

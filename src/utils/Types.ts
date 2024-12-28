@@ -46,10 +46,8 @@ export enum GameStep {
 export enum AbilityType {
   DONFATER_KILL = 'DONFATER_KILL',
   TOLVAJ_LOPAS = 'TOLVAJ_LOPAS',
-  //SZIMATOLO_SZIMATOLAS = 'SZIMATOLO_SZIMATOLAS',
   BOSSZUALLO_KILL = 'BOSSZUALLO_KILL',
   DOKTOR_GYOGYITAS = 'DOKTOR_GYOGYITAS',
-  //DETEKTIV_NYOMOZAS = 'DETEKTIV_NYOMOZAS',
   SOFOR_CSERE = 'SOFOR_CSERE',
   DINOIDOMAR_KILL = 'DINOIDOMAR_KILL',
   TEKNOS_CIGI = 'TEKNOS_CIGI',
@@ -58,12 +56,13 @@ export enum AbilityType {
   ALKIMISTA_BOMBA = 'ALKIMISTA_BOMBA',
   ALKIMISTA_GYOGYITAL = 'ALKIMISTA_GYOGYITAL',
   ALKIMISTA_SZIKLABOR = 'ALKIMISTA_SZIKLABOR',
-  FANATIKUS_KILL = 'FANATIKUS_KILL'
+  FANATIKUS_KILL = 'FANATIKUS_KILL',
+  DEMONDOSZPOD_TULELES = 'DEMONDOSZPOD_TULELES'
 }
 
 export enum TimeOfDay {
   DAY = 'NAPPAL',
-  NIGHT = 'EJSZAKA'
+  NIGHT = 'ÉJSZAKA'
 }
 
 export type CharacterAbility = {
@@ -83,5 +82,6 @@ export type CardData = {
   abilities?: CharacterAbility[],
   effects: AbilityType[],
   actionDescription?: string,
-  demonDoszpodDeathCount?: number
+  // like really, wtf
+  hasDemonDoszpodAlreadyDiedOnce?: boolean
 }

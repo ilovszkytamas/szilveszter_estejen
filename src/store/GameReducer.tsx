@@ -54,7 +54,7 @@ export const gameReducer: GameReducerType = (prevState, action) => {
         selectedCards: prevState.selectedCards.map((card) => {
           return {
             ...card,
-            effects: []
+            effects: card.character == Character.DEMONDOSZPOD && !card.hasDemonDoszpodAlreadyDiedOnce ? [AbilityType.DEMONDOSZPOD_TULELES] : []
           }
         })
       }
@@ -75,6 +75,12 @@ export const gameReducer: GameReducerType = (prevState, action) => {
       return {
         ...prevState,
         timeOfDay: action.payload
+      }
+    }
+    case GameAction.SET_DEMON_DOSZPOD_ALREADY_DIED_ONCE_STATUS: {
+      return {
+        ...prevState,
+        selectedCards: prevState.selectedCards.map((card) => card.character === Character.DEMONDOSZPOD ? {...card, hasDemonDoszpodAlreadyDiedOnce: true} : card)
       }
     }
     case GameAction.LOAD_GAME_STATE_FROM_LOCAL_STORAGE: return action.payload

@@ -61,7 +61,7 @@ const PendingGameContainer: React.FC = () => {
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', minWidth: '30%' }}>
                   {card.effects.map(effect => {
                     return (
-                      <ListItem style={{ marginLeft: '20px', marginRight: '20px', width: '20%' }}
+                      <ListItem style={{ marginLeft: '-50px', marginRight: '20px' }}
                         key={card.character}
                       >
                         <ListItemText primary={effect} />

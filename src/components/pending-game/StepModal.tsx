@@ -3,7 +3,7 @@ import React from 'react';
 import { GameContext } from '../../store/GameContext';
 import { AbilityType, CardData, Character, CharacterAbility } from '../../utils/Types';
 import useCharacterAction from '../../hooks/useCharacterAction';
-import { killCharacter } from '../../store/GameActions';
+import { killCharacter, setDemonDoszpodAlreadyDiedStatus } from '../../store/GameActions';
 
 enum ModalState {
   PENDING_NIGHT = 'PENDING_NIGHT',
@@ -28,6 +28,7 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
   const [currentTarget, setCurrentTarget] = React.useState<Character>();
   const [currentAbility, setCurrentAbility] = React.useState<AbilityType>();
   const [currentKilledCharacters, setCurrentKilledCharacters] = React.useState<CardData[]>();
+  const [isNightConcluded, setNightConcluded] = React.useState<boolean>(false);
 
   const handleOpen = () => {
     setModalOpen(true);
@@ -36,7 +37,7 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
   const handleClose = () => {
     setModalOpen(false);
   }
-  console.log(finalisedOrder[currentIndex])
+
   const handleNext = () => {
     if (currentTarget && currentAbility) {
       hitAction(finalisedOrder[currentIndex].character, currentAbility, currentTarget)
@@ -53,7 +54,7 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
   }
 
   const handleConcludeNight = () => {
-    let killedCharacters = selectedCards.filter(
+    let charactersMarkedForDeath = selectedCards.filter(
       card => card.effects.find(
         effect => {
           return effect === AbilityType.DONFATER_KILL
@@ -72,23 +73,21 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
       )
     )
 
-    const weldedCharacter = killedCharacters.find(character => character.isWelded);
+    const weldedCharacter = charactersMarkedForDeath.find(character => character.isWelded);
 
     if (weldedCharacter) {
       const weldedOtherPair = selectedCards.find(card => card.isWelded && card.character !== weldedCharacter.character)!;
-      killedCharacters = [...killedCharacters, weldedOtherPair];
+      charactersMarkedForDeath = [...charactersMarkedForDeath, weldedOtherPair];
     }
 
-    const demonDoszpod = killedCharacters.find(character => Character.DEMONDOSZPOD === character.character);
-    if (demonDoszpod && demonDoszpod?.demonDoszpodDeathCount === 0) {
-      demonDoszpod.demonDoszpodDeathCount = 1;
-      // TODO: fix naming here
-      setCurrentKilledCharacters(killedCharacters.filter(character => character.character !== Character.DEMONDOSZPOD));
+    const demonDoszpod = charactersMarkedForDeath.find(character => Character.DEMONDOSZPOD === character.character);
+    if (demonDoszpod && !demonDoszpod?.hasDemonDoszpodAlreadyDiedOnce) {
+      setCurrentKilledCharacters(charactersMarkedForDeath.filter(character => character.character !== Character.DEMONDOSZPOD));
+      dispatch(setDemonDoszpodAlreadyDiedStatus())
     } else {
-      setCurrentKilledCharacters(killedCharacters);
+      setCurrentKilledCharacters(charactersMarkedForDeath);
     }
-
-    killedCharacters.forEach(character => dispatch(killCharacter(character.character)));
+    setNightConcluded(true);
   }
 
   const handleCharacterAction = (abilityType: AbilityType) => {
@@ -106,8 +105,12 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
   }
 
   const handleWakeUp = () => {
+    if (currentKilledCharacters) {
+      currentKilledCharacters.forEach(character => dispatch(killCharacter(character.character)));
+    }
     setModalOpen(false);
     setCurrentKilledCharacters(undefined);
+    setNightConcluded(false);
     props.onWakeUp();
   }
 
@@ -143,7 +146,7 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
 
   return (
     <>
-      <Button onClick={handleOpen}>KARAKTER_DÖNTÉSEK</Button>
+      <Button onClick={handleOpen} style={{backgroundColor: 'orange', marginLeft: '15px'}}>KARAKTER DÖNTÉSEK</Button>
       <Modal
         open={isModalOpen}
         onClose={handleClose}
@@ -151,16 +154,15 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-
           {currentModalState === ModalState.CONCLUDE_NIGHT && <>
             <Typography id="modal-modal-title" variant="h6" component="h2" style={{ textAlign: 'center', marginBottom: '30px' }}>
-              Véget ért az éjszaka, nézzük meg kik haltak meg(geci idétlen implementáció, nyomj rá a lezárásra, és csak utána indíts új napot pls)
+            Véget ért az éjszaka, nézzük meg kik haltak meg
             </Typography>
             <Typography id="modal-modal-title" variant="h6" component="h2" style={{ textAlign: 'center', marginBottom: '30px' }}>
-              <Button onClick={handleConcludeNight} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>ÉJSZAKA LEZÁRÁSA</Button>
+              {!isNightConcluded && <Button type={'submit'} onClick={handleConcludeNight} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>ÉJSZAKA LEZÁRÁSA</Button>}
             </Typography>
             {currentKilledCharacters && <>Megölt karakterek: {currentKilledCharacters.map(card => (card.character)).join(", ")}</>}
-            <Button onClick={handleWakeUp} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>REGGEL MEGKEZDÉSE, TIME TO HANG SOMEONE</Button>
+            {currentKilledCharacters && <Button onClick={handleWakeUp} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>REGGEL MEGKEZDÉSE, TIME TO HANG SOMEONE</Button>}
           </>}
           {
             currentModalState === ModalState.PENDING_NIGHT && <>
