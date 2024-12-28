@@ -4,6 +4,7 @@ import { GameContext } from '../../store/GameContext';
 import { AbilityType, CardData, Character, CharacterAbility } from '../../utils/Types';
 import useCharacterAction from '../../hooks/useCharacterAction';
 import { killCharacter, setDemonDoszpodAlreadyDiedStatus } from '../../store/GameActions';
+import { DINOIDOMAR } from '../../utils/DataCollections';
 
 enum ModalState {
   PENDING_NIGHT = 'PENDING_NIGHT',
@@ -27,7 +28,7 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
   const [availableTargets, setAvailableTargets] = React.useState<CardData[]>([]);
   const [currentTarget, setCurrentTarget] = React.useState<Character>();
   const [currentAbility, setCurrentAbility] = React.useState<AbilityType>();
-  const [currentKilledCharacters, setCurrentKilledCharacters] = React.useState<CardData[]>();
+  const [currentKilledCharacters, setCurrentKilledCharacters] = React.useState<CardData[]>([]);
   const [isNightConcluded, setNightConcluded] = React.useState<boolean>(false);
 
   const handleOpen = () => {
@@ -88,6 +89,9 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
       setCurrentKilledCharacters(charactersMarkedForDeath);
     }
     setNightConcluded(true);
+    if (charactersMarkedForDeath?.find(character => Character.DINOIDOMAR === character.character)) {
+      setCurrentModalState(ModalState.DINOIDOMAR_DEAD);
+    }
   }
 
   const handleCharacterAction = (abilityType: AbilityType) => {
@@ -109,7 +113,7 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
       currentKilledCharacters.forEach(character => dispatch(killCharacter(character.character)));
     }
     setModalOpen(false);
-    setCurrentKilledCharacters(undefined);
+    setCurrentKilledCharacters([]);
     setNightConcluded(false);
     props.onWakeUp();
   }
@@ -130,6 +134,16 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
 
   const getCurrentCharacter = (): CardData => {
     return selectedCards.find(card => card.character === finalisedOrder[currentIndex].character)!;
+  }
+
+  const dinoidomarSelect = () => {
+    let currentTargetCard: CardData = selectedCards.find(card => card.character === currentTarget)!;
+    let refreshedCurrentKilledCharacterList: CardData[] = [...currentKilledCharacters, currentTargetCard];
+    if (currentTargetCard.isWelded) {
+      const weldedOtherPair = selectedCards.find(card => card.isWelded && card.character !== currentTarget)!;
+      refreshedCurrentKilledCharacterList = [...refreshedCurrentKilledCharacterList, weldedOtherPair];
+    }
+    setCurrentKilledCharacters(refreshedCurrentKilledCharacterList);
   }
 
   const style = {
@@ -190,6 +204,34 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
                 </FormControl>
               </div>}
               <Button onClick={handleNext} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>KÖVETKEZŐ DÖNTÉS</Button>
+            </>
+          }
+          {
+            currentModalState === ModalState.DINOIDOMAR_DEAD && <>
+              <Typography id="modal-modal-title" variant="h6" component="h2" style={{ textAlign: 'center', marginBottom: '30px' }}>
+                {DINOIDOMAR.actionDescription}
+              </Typography>
+              <Typography id="modal-modal-description" style={{ display: 'flex' }}>
+                {DINOIDOMAR.abilities?.map((ability) => {
+                  return (<Button disabled={!currentTarget} onClick={dinoidomarSelect} style={{ backgroundColor: 'black', color: 'white', marginRight: '10px', textDecorationLine: !getCurrentCharacter().isAlive || isAbilityButtonDisabled(ability) ? 'line-through' : 'none' }}>{ability.abilityType}</Button>)
+                })}
+              </Typography>
+              {<div>
+                <FormControl style={{ width: '300px', marginBottom: '10px', marginTop: '10px' }}>
+                  <InputLabel>Válassz célpontot az actionhöz</InputLabel>
+                  <Select
+                    id="demo-simple-select"
+                    label="Targets"
+                    value={currentTarget}
+                    onChange={handleTargetChange}
+                  >
+                    {selectedCards.map(target => {
+                      return (<MenuItem value={target.character}>{target.character + '-' + target.playerName}</MenuItem>)
+                    })}
+                  </Select>
+                </FormControl>
+              </div>}
+              {currentKilledCharacters && <Button onClick={handleWakeUp} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>REGGEL MEGKEZDÉSE, TIME TO HANG SOMEONE</Button>}
             </>
           }
         </Box>

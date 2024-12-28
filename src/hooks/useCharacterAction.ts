@@ -1,7 +1,7 @@
 import React from "react";
 import { GameContext } from "../store/GameContext";
 import { AbilityType, Character } from "../utils/Types";
-import { hitAbility } from "../store/GameActions";
+import { hitAbility, killCharacter } from "../store/GameActions";
 
 export default function useCharacterAction() {
     const { dispatch } = React.useContext(GameContext);
@@ -10,7 +10,7 @@ export default function useCharacterAction() {
             case AbilityType.DONFATER_KILL: donfaterKill(initiator, target); break;
             case AbilityType.BOSSZUALLO_KILL: avengerKill(initiator, target); break;
             case AbilityType.DOKTOR_GYOGYITAS: doctorHeal(initiator, target); break;
-            case AbilityType.DINOIDOMAR_KILL: dinoKill(initiator, target); break;
+            case AbilityType.DINOIDOMAR_KILL: dinoidomarKill(target); break;
             case AbilityType.DEMOGORGON_KILL: demogorgonKill(initiator, target); break;
             case AbilityType.ALKIMISTA_BOMBA: alchemistBomb(initiator, target); break;
             case AbilityType.ALKIMISTA_GYOGYITAL: alchemistHeal(initiator, target); break;
@@ -31,8 +31,8 @@ export default function useCharacterAction() {
         dispatch(hitAbility([initiator, AbilityType.DOKTOR_GYOGYITAS, target]))
     }
 
-    const dinoKill = (initiator: Character, target: Character) => {
-        dispatch(hitAbility([initiator, AbilityType.DINOIDOMAR_KILL, target]))
+    const dinoidomarKill = (target: Character) => {
+        dispatch(killCharacter(target));
     }
 
     const demogorgonKill = (initiator: Character, target: Character) => {
