@@ -1,6 +1,6 @@
 import { Button, List, ListItem, ListItemText } from '@material-ui/core';
 import React from 'react'
-import { CardData, Faction, TimeOfDay } from '../../utils/Types';
+import { CardData, Character, Faction, TimeOfDay } from '../../utils/Types';
 import { GameContext } from '../../store/GameContext';
 import { StepModal } from './StepModal';
 import { killCharacter, resetEffects, setDayCount, setTimeOfDay } from '../../store/GameActions';
@@ -45,7 +45,18 @@ const PendingGameContainer: React.FC = () => {
   }
 
   const onHangClick = (card: CardData) => {
-    setCurrentHung(card);
+    if (currentHung?.character === card.character) {
+      setCurrentHung(undefined);
+    } else {
+      setCurrentHung(card);
+    }
+  }
+
+  const getBackgroundColorForHangButton = (character: Character): string => {
+    if (character === currentHung?.character) {
+      return "orange";
+    }
+    else return "black";
   }
 
   return (
@@ -78,7 +89,7 @@ const PendingGameContainer: React.FC = () => {
                     <ListItemText primary={card.playerName} />
                   </ListItem>
                 </div>
-                {card.isAlive && timeOfDay === TimeOfDay.DAY && <Button onClick={() => onHangClick(card)} style={{backgroundColor: 'black', color: 'white'}}>FELAKASZTÁS</Button>}
+                {card.isAlive && timeOfDay === TimeOfDay.DAY && <Button onClick={() => onHangClick(card)} style={{backgroundColor: getBackgroundColorForHangButton(card.character), color: 'white'}}>FELAKASZTÁS</Button>}
               </div>
             );
           })}

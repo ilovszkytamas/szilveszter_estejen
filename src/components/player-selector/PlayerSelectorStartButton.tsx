@@ -50,8 +50,6 @@ const PlayerSelectorStartButton: React.FC<PlayerSelectorStartButtonProps> = (pro
       dispatch(changeGameStep(GameStep.PENDING_GAME));
     }
   }
-
-  console.log(state);
   
   return (
     <>
