@@ -65,6 +65,19 @@ export const gameReducer: GameReducerType = (prevState, action) => {
         selectedCards: prevState.selectedCards.map((card) => card.character === action.payload ? {...card, isAlive: false} : card)
       }
     }
+    case GameAction.SET_DAY_COUNT: {
+      return {
+        ...prevState,
+        dayCount: action.payload
+      }
+    }
+    case GameAction.SET_TIME_OF_DAY: {
+      return {
+        ...prevState,
+        timeOfDay: action.payload
+      }
+    }
+    case GameAction.LOAD_GAME_STATE_FROM_LOCAL_STORAGE: return action.payload
     default: return prevState;
   }
 }

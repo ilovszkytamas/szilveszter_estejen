@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CardData, GameStep } from '../utils/Types';
+import { CardData, GameStep, TimeOfDay } from '../utils/Types';
 import { gameReducer } from './GameReducer';
 import { INITIAL_ORDER } from '../utils/DataCollections';
 
@@ -11,13 +11,17 @@ export type GameReducerActionType = {
 export type GameStateType = {
   selectedCards: CardData[];
   gameStep: GameStep,
-  finalisedOrder: CardData[]
+  finalisedOrder: CardData[],
+  dayCount: number,
+  timeOfDay: TimeOfDay
 }
 
 export const initialState: GameStateType = {
   selectedCards: [],
   gameStep: GameStep.CHARACTER_SELECTION,
-  finalisedOrder: INITIAL_ORDER
+  finalisedOrder: INITIAL_ORDER,
+  dayCount: 1,
+  timeOfDay: TimeOfDay.NIGHT
 }
 
 export type GameContextType = {

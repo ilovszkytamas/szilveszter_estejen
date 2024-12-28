@@ -1,5 +1,5 @@
-import { AbilityType, CardData, Character, GameStep } from "../utils/Types";
-import { GameReducerActionType } from "./GameContext";
+import { AbilityType, CardData, Character, GameStep, TimeOfDay } from "../utils/Types";
+import { GameReducerActionType, GameStateType } from "./GameContext";
 
 export enum GameAction {
   ADD_CHARACTER = 'ADD_CHARACTER',
@@ -10,7 +10,10 @@ export enum GameAction {
   FINALISE_ORDER = 'FINALISE_ORDER',
   HIT_ABILITY = 'HIT_ABILITY',
   RESET_EFFECTS = 'RESET_EFFECTS',
-  KILL_CHARACTER = 'KILL_CHARACTER'
+  KILL_CHARACTER = 'KILL_CHARACTER',
+  LOAD_GAME_STATE_FROM_LOCAL_STORAGE = 'LOAD_GAME_STATE_FROM_LOCAL_STORAGE',
+  SET_DAY_COUNT = 'SET_DAY_COUNT',
+  SET_TIME_OF_DAY = 'SET_TIME_OF_DAY'
 }
 
 export const addCharacter = (payload: CardData): GameReducerActionType => ({
@@ -56,5 +59,20 @@ export const resetEffects = (): GameReducerActionType => ({
 
 export const killCharacter = (payload: Character): GameReducerActionType => ({
   type: GameAction.KILL_CHARACTER,
+  payload
+})
+
+export const loadGameStateFromLocalStorage = (payload: GameStateType): GameReducerActionType => ({
+  type: GameAction.LOAD_GAME_STATE_FROM_LOCAL_STORAGE,
+  payload
+})
+
+export const setDayCount = (payload: number): GameReducerActionType => ({
+  type: GameAction.SET_DAY_COUNT,
+  payload
+})
+
+export const setTimeOfDay = (payload: TimeOfDay): GameReducerActionType => ({
+  type: GameAction.SET_TIME_OF_DAY,
   payload
 })

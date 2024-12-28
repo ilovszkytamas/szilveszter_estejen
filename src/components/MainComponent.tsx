@@ -4,8 +4,11 @@ import { GameStep } from '../utils/Types';
 import CharacterSelectorContainer from './character-selector/CharacterSelectorContainer';
 import PlayerSelector from './player-selector/PlayerSelector';
 import PendingGameContainer from './pending-game/PendingGameContainer';
+import useLoadingHandler from '../hooks/useLoadingHandler';
+import { Button } from '@material-ui/core';
 
 const MainComponent: React.FC = () => {
+  useLoadingHandler();
   const { state } = React.useContext(GameContext);
   const { gameStep } = state;
   const [currentComponent, setCurrentComponent] = React.useState<React.ReactElement>();
@@ -13,6 +16,11 @@ const MainComponent: React.FC = () => {
   React.useEffect(() => {
     setComponentByGameStep(gameStep);
   }, [gameStep])
+
+  const onNewGameClick = () => {
+    localStorage.removeItem('gameState');
+    window.location.reload();
+  }
 
   const setComponentByGameStep = (gameStep: GameStep): void => {
     switch (gameStep) {
@@ -24,6 +32,7 @@ const MainComponent: React.FC = () => {
   return (
     <>
       {currentComponent}
+      <Button onDoubleClick={onNewGameClick} style={{backgroundColor: 'purple', marginTop: '100px'}}>ÚJ JÁTÉK KEZDÉSE</Button>
     </>
   );
 }

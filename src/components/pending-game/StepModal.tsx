@@ -7,7 +7,8 @@ import { killCharacter } from '../../store/GameActions';
 
 enum ModalState {
   PENDING_NIGHT = 'PENDING_NIGHT',
-  CONCLUDE_NIGHT = 'CONCLUDE_NIGHT'
+  CONCLUDE_NIGHT = 'CONCLUDE_NIGHT',
+  DINOIDOMAR_DEAD = 'DINOIDOMAR_DEAD'
 }
 
 interface StepModalProps {

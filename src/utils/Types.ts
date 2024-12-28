@@ -61,6 +61,11 @@ export enum AbilityType {
   FANATIKUS_KILL = 'FANATIKUS_KILL'
 }
 
+export enum TimeOfDay {
+  DAY = 'NAPPAL',
+  NIGHT = 'EJSZAKA'
+}
+
 export type CharacterAbility = {
   abilityType: AbilityType,
   usageCountTotal: number,

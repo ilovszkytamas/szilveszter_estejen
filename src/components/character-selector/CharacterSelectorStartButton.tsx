@@ -92,9 +92,9 @@ const CharacterSelectorStartButton: React.FC = () => {
   }, [selectedCards])
 
   const startGame = (): void => {
-    if (startData.startable) {
+    //if (startData.startable) {
       dispatch(changeGameStep(GameStep.PLAYER_SELECTION))
-    }
+    //}
   }
 
   const getGameStartStatusText = (): string => {
