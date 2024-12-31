@@ -15,7 +15,6 @@
     "@types/node": "^16.11.63",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "lodash": "^4.17.21",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-scripts": "5.0.1",

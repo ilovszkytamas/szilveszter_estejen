@@ -54,7 +54,7 @@ export const gameReducer: GameReducerType = (prevState, action) => {
         selectedCards: prevState.selectedCards.map((card) => {
           return {
             ...card,
-            effects: card.character == Character.DEMONDOSZPOD && !card.hasDemonDoszpodAlreadyDiedOnce ? [AbilityType.DEMONDOSZPOD_TULELES] : []
+            effects: card.character === Character.DEMONDOSZPOD && !card.hasDemonDoszpodAlreadyDiedOnce ? [AbilityType.DEMONDOSZPOD_TULELES] : []
           }
         })
       }

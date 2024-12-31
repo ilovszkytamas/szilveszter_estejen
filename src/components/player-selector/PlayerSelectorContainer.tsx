@@ -5,7 +5,7 @@ import { CardData, Character, Faction } from '../../utils/Types';
 import { assignPlayerToCharacter } from '../../store/GameActions';
 import PlayerSelectorStartButton from './PlayerSelectorStartButton';
 
-const PlayerSelector: React.FC = () => {
+const PlayerSelectorContainer: React.FC = () => {
   const { state, dispatch } = React.useContext(GameContext);
   const { selectedCards } = state;
   const [hasWelder, setHasWelder] = React.useState<boolean>(false);
@@ -81,4 +81,4 @@ const PlayerSelector: React.FC = () => {
   );
 }
 
-export default PlayerSelector;
+export default PlayerSelectorContainer;

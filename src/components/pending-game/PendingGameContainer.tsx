@@ -85,7 +85,7 @@ const PendingGameContainer: React.FC = () => {
                     key={card.character}
                     style={{ backgroundColor: getBackgroundColor(card), color: 'white' }}
                   >
-                    <ListItemText primary={card.character} />
+                    <ListItemText primary={`${card.character} ${card.isWelded ? "(hegesztett)" : ""}`} />
                     <ListItemText primary={card.playerName} />
                   </ListItem>
                 </div>

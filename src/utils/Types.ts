@@ -40,7 +40,8 @@ export enum Character {
 export enum GameStep {
   CHARACTER_SELECTION = 'CHARACTER_SELECTION',
   PLAYER_SELECTION = 'PLAYER_SELECTION',
-  PENDING_GAME = 'PENDING_GAME'
+  PENDING_GAME = 'PENDING_GAME',
+  GAME_MASTER = 'GAME_MASTER'
 }
 
 export enum AbilityType {
