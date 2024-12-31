@@ -2,11 +2,11 @@ import { AbilityType, CardData, Character, Faction } from "./Types";
 
 const DONFATER_ACTION = "Donfater választhat kit öl meg";
 const BOKDOSO_ACTION = "Bökdöső választhat kit öl meg (skippeld ha még él a donfater pls, nem volt időm megírni)";
-const TOLVAJ_ACTION = "Tolvaj választhat egy szereplőt akinek meggátolja a cselekvését";
+const TOLVAJ_ACTION = "Tolvaj választhat egy szereplőt akinek meggátolja a cselekvését (ha ő az új gyilkos, akkor meg megöl valakit)";
 const SOFOR_ACTION = "Sofőr választhat két szereplőt akiket megcserélne";
 const TESTOR_ACTION = "Testőr választhat kit véd meg";
 const DETEKTIV_ACTION = "Detektív megvizsgálhat valakit";
-const SZIMATOLO_ACTION = "Szimatoló megvizsgálhat valakit";
+const SZIMATOLO_ACTION = "Szimatoló megvizsgálhat valakit (ha ő az új gyilkos, akkor meg megöl valakit)";
 const DEMOGORGON_ACTION = "Demogorgon választhat kit öl meg";
 const DEMON_DOSZPOD = "Démon Doszpod választhat kit öl meg";
 const BOSSZUALLO_ACTION = "Bosszúálló választhat kit öl meg";
@@ -17,16 +17,16 @@ const DINOIDOMAR_ACTION = "Dínóidomár választhat valakit akit magával visz 
 const TEKNOS_ACTION = 'TEKNOS_ACTION';
 
 // evil
-export const DONFATER1: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Bódikám-Don fater/Búdikám_Donfater.png`, faction: Faction.EVIL, character: Character.DONFATER1, abilities: [{ abilityType: AbilityType.DONFATER_KILL, usageCountTotal: 0 }], actionDescription: DONFATER_ACTION, effects: [], isAlive: true};//TODO: remove temp weld
-export const DONFATER2: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Bódikám-Don fater/Szabikám_Donfater.png`, faction: Faction.EVIL, character: Character.DONFATER2, abilities: [{ abilityType: AbilityType.DONFATER_KILL, usageCountTotal: 0 }], actionDescription: DONFATER_ACTION, effects: [], isAlive: true};//TODO: remove temp weld
+export const DONFATER1: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Bódikám-Don fater/Búdikám_Donfater.png`, faction: Faction.EVIL, character: Character.DONFATER1, abilities: [{ abilityType: AbilityType.DONFATER_KILL, usageCountTotal: 0 }], actionDescription: DONFATER_ACTION, effects: [], isAlive: true};
+export const DONFATER2: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Bódikám-Don fater/Szabikám_Donfater.png`, faction: Faction.EVIL, character: Character.DONFATER2, abilities: [{ abilityType: AbilityType.DONFATER_KILL, usageCountTotal: 0 }], actionDescription: DONFATER_ACTION, effects: [], isAlive: true};
 export const BOKDOSO1: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Bökdöső-Gyilkos/Bökdöső_Gyilkos1.png`, faction: Faction.EVIL, character: Character.BOKDOSO1, abilities: [{ abilityType: AbilityType.DONFATER_KILL, usageCountTotal: 0 }], actionDescription: BOKDOSO_ACTION, effects: [], isAlive: true};
 export const BOKDOSO2: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Bökdöső-Gyilkos/Bökdöső_Gyilkos2.png`, faction: Faction.EVIL, character: Character.BOKDOSO2, abilities: [{ abilityType: AbilityType.DONFATER_KILL, usageCountTotal: 0 }], actionDescription: BOKDOSO_ACTION, effects: [], isAlive: true};
 export const BOKDOSO3: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Bökdöső-Gyilkos/Bökdöső_Gyilkos3.png`, faction: Faction.EVIL, character: Character.BOKDOSO3, abilities: [{ abilityType: AbilityType.DONFATER_KILL, usageCountTotal: 0 }], actionDescription: BOKDOSO_ACTION, effects: [], isAlive: true};
-export const SZIMATOLO1: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Szimatoló-Kém/Szimatoló_kém1.png`, faction: Faction.EVIL, character: Character.SZIMATOLO1, actionDescription: SZIMATOLO_ACTION, effects: [], isAlive: true};
-export const SZIMATOLO2: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Szimatoló-Kém/Szimatoló_kém2.png`, faction: Faction.EVIL, character: Character.SZIMATOLO2, actionDescription: SZIMATOLO_ACTION, effects: [], isAlive: true};
-export const TOLVAJ1: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Zsebmetsző-Tolvaj 1/Zsebmetsző_Tolvaj1.png`, faction: Faction.EVIL, character: Character.TOLVAJ1, abilities: [{ abilityType: AbilityType.TOLVAJ_LOPAS, usageCountTotal: 0 }], actionDescription: TOLVAJ_ACTION, effects: [], isAlive: true};
-export const TOLVAJ2: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Zsivány-Tolvaj 2/Zsivány1_Tolvaj2.png`, faction: Faction.EVIL, character: Character.TOLVAJ2, abilities: [{ abilityType: AbilityType.TOLVAJ_LOPAS, usageCountTotal: 0 }], actionDescription: TOLVAJ_ACTION, effects: [], isAlive: true};
-export const TOLVAJ3: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Zsivány-Tolvaj 2/Zsivány2_Tolvaj2.png`, faction: Faction.EVIL, character: Character.TOLVAJ3, abilities: [{ abilityType: AbilityType.TOLVAJ_LOPAS, usageCountTotal: 0 }], actionDescription: TOLVAJ_ACTION, effects: [], isAlive: true};
+export const SZIMATOLO1: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Szimatoló-Kém/Szimatoló_kém1.png`, faction: Faction.EVIL, character: Character.SZIMATOLO1, abilities: [{ abilityType: AbilityType.DONFATER_KILL, usageCountTotal: 0 }], actionDescription: SZIMATOLO_ACTION, effects: [], isAlive: true};
+export const SZIMATOLO2: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Szimatoló-Kém/Szimatoló_kém2.png`, faction: Faction.EVIL, character: Character.SZIMATOLO2, abilities: [{ abilityType: AbilityType.DONFATER_KILL, usageCountTotal: 0 }], actionDescription: SZIMATOLO_ACTION, effects: [], isAlive: true};
+export const TOLVAJ1: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Zsebmetsző-Tolvaj 1/Zsebmetsző_Tolvaj1.png`, faction: Faction.EVIL, character: Character.TOLVAJ1, abilities: [{ abilityType: AbilityType.TOLVAJ_LOPAS, usageCountTotal: 0 }, { abilityType: AbilityType.DONFATER_KILL, usageCountTotal: 0 }], actionDescription: TOLVAJ_ACTION, effects: [], isAlive: true};
+export const TOLVAJ2: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Zsivány-Tolvaj 2/Zsivány1_Tolvaj2.png`, faction: Faction.EVIL, character: Character.TOLVAJ2, abilities: [{ abilityType: AbilityType.TOLVAJ_LOPAS, usageCountTotal: 0 }, { abilityType: AbilityType.DONFATER_KILL, usageCountTotal: 0 }], actionDescription: TOLVAJ_ACTION, effects: [], isAlive: true};
+export const TOLVAJ3: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Csalárd Csanádok/Zsivány-Tolvaj 2/Zsivány2_Tolvaj2.png`, faction: Faction.EVIL, character: Character.TOLVAJ3, abilities: [{ abilityType: AbilityType.TOLVAJ_LOPAS, usageCountTotal: 0 }, { abilityType: AbilityType.DONFATER_KILL, usageCountTotal: 0 },], actionDescription: TOLVAJ_ACTION, effects: [], isAlive: true};
 
 // neutral
 export const BOLOND: CardData = {imageLocation: `${process.env.PUBLIC_URL}/images/Sejtelmes Sikkasztók/Agyalágyult-Bolond/Agyalágyult_Bolond.png`, faction: Faction.NEUTRAL, character: Character.BOLOND, effects: [], isAlive: true};

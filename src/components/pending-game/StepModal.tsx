@@ -41,7 +41,8 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
 
   const handleNext = () => {
     if (currentTarget && currentAbility) {
-      hitAction(finalisedOrder[currentIndex].character, currentAbility, currentTarget)
+      const initiator = selectedCards.find(card => card.character === finalisedOrder[currentIndex].character);
+      hitAction(initiator!, currentAbility, currentTarget)
     }
     if (currentIndex !== finalisedOrder.length - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -176,7 +177,7 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
               {!isNightConcluded && <Button type={'submit'} onClick={handleConcludeNight} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>ÉJSZAKA LEZÁRÁSA</Button>}
             </Typography>
             {currentKilledCharacters && <>Megölt karakterek: {currentKilledCharacters.map(card => (card.character)).join(", ")}</>}
-            {currentKilledCharacters && <Button onClick={handleWakeUp} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>REGGEL MEGKEZDÉSE, TIME TO HANG SOMEONE</Button>}
+            {isNightConcluded && <Button onClick={handleWakeUp} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>REGGEL MEGKEZDÉSE, TIME TO HANG SOMEONE</Button>}
           </>}
           {
             currentModalState === ModalState.PENDING_NIGHT && <>
@@ -231,7 +232,7 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
                   </Select>
                 </FormControl>
               </div>}
-              {currentKilledCharacters && <Button onClick={handleWakeUp} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>REGGEL MEGKEZDÉSE, TIME TO HANG SOMEONE</Button>}
+              {isNightConcluded && <Button onClick={handleWakeUp} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>REGGEL MEGKEZDÉSE, TIME TO HANG SOMEONE</Button>}
             </>
           }
         </Box>
