@@ -1,4 +1,4 @@
-import { Button, List, ListItem, ListItemText } from "@material-ui/core"
+import { Button, List, ListItem, ListItemText } from '@mui/material'
 import React from "react";
 import { GameContext } from "../../store/GameContext";
 import { Checkbox } from "@mui/material";

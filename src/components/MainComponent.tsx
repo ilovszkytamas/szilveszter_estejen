@@ -4,7 +4,7 @@ import { GameStep } from '../utils/Types';
 import CharacterSelectorContainer from './character-selector/CharacterSelectorContainer';
 import PendingGameContainer from './pending-game/PendingGameContainer';
 import useLoadingHandler from '../hooks/useLoadingHandler';
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import PlayerSelectorContainer from './player-selector/PlayerSelectorContainer';
 import GameMasterContainer from './game-master/GameMasterContainer';
 import { changeGameStep } from '../store/GameActions';
@@ -35,7 +35,7 @@ const MainComponent: React.FC = () => {
   return (
     <>
       {currentComponent}
-      {gameStep === GameStep.PENDING_GAME && <Button onClick={onGameMasterClick} style={{backgroundColor: 'purple', marginTop: '100px'}}>JÁTÉKMESTER MÓD</Button>}
+      {gameStep !== GameStep.GAME_MASTER && <Button onClick={onGameMasterClick} style={{backgroundColor: 'purple', marginTop: '100px'}}>JÁTÉKMESTER MÓD</Button>}
     </>
   );
 }

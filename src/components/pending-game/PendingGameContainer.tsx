@@ -1,4 +1,4 @@
-import { Button, List, ListItem, ListItemText } from '@material-ui/core';
+import { Button, List, ListItem, ListItemText } from '@mui/material';
 import React from 'react'
 import { CardData, Character, Faction, TimeOfDay } from '../../utils/Types';
 import { GameContext } from '../../store/GameContext';

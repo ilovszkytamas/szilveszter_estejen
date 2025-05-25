@@ -1,6 +1,6 @@
 import React from 'react';
 import { GameContext } from '../../store/GameContext';
-import { Button, Input, List, ListItem, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
+import { Box, Button, Input, List, ListItem, ListItemSecondaryAction, ListItemText, Typography } from '@mui/material';
 import { CardData, Character, Faction } from '../../utils/Types';
 import { assignPlayerToCharacter } from '../../store/GameActions';
 import PlayerSelectorStartButton from './PlayerSelectorStartButton';
@@ -27,7 +27,7 @@ const PlayerSelectorContainer: React.FC = () => {
     if (weldedPlayers.find((player => player === character))) {
       return "orange";
     }
-    else return "white";
+    else return "black";
   }
 
   const weldPlayer = (character: Character) => {
@@ -53,31 +53,57 @@ const PlayerSelectorContainer: React.FC = () => {
   }, [])
 
   return (
-    <div style={{ width: '80%', marginLeft: '10%' }}>
-      <label>Rendelj játékost a karakterekhez</label>
+    <Box sx={{ width: { xs: '100%', sm: '90%', md: '80%' }, mx: 'auto', mt: 3 }}>
+      <Typography variant="h6" component="label" sx={{ mb: 2, display: 'block' }}>
+        Rendelj játékost a karakterekhez
+      </Typography>
+
       <List>
-        {selectedCards.map((card) => {
-          return (
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', width: '80%' }}>
-                <ListItem
-                  key={card.character}
-                  style={{ backgroundColor: getBackgroundColor(card.faction) }}
-                >
-                  <ListItemText primary={card.character} />
-                  <ListItemSecondaryAction>
-                    <Input style={{ backgroundColor: 'white' }} onBlur={(e) => onNameInputChange(e, card)} />
-                  </ListItemSecondaryAction>
-                </ListItem>
-              </div>
-              {hasWelder
-                && <Button onClick={() => weldPlayer(card.character)} style={{ backgroundColor: getBackgroundColorForWeldButton(card.character) }}>HEGESZTÉS</Button>}
-            </div>
-          );
-        })}
+        {selectedCards.map((card) => (
+          <ListItem
+            key={card.character}
+            sx={{
+              backgroundColor: getBackgroundColor(card.faction),
+              mb: 1,
+              flexDirection: { xs: 'column', sm: 'row' },
+              alignItems: { xs: 'flex-start', sm: 'center' },
+              gap: 1,
+            }}
+          >
+            <ListItemText primary={card.character} sx={{ flex: '1 1 auto' }} />
+
+            <Input
+              onBlur={(e) => onNameInputChange(e, card)}
+              placeholder="Játékos neve"
+              sx={{
+                backgroundColor: 'white',
+                px: 1,
+                py: 0.5,
+                borderRadius: 1,
+                width: { xs: '100%', sm: '200px' },
+                mr: { sm: hasWelder ? 1 : 0 },
+              }}
+              inputProps={{ 'aria-label': 'Játékos neve' }}
+            />
+
+            {hasWelder && (
+              <Button
+                variant="contained"
+                onClick={() => weldPlayer(card.character)}
+                sx={{
+                  bgcolor: getBackgroundColorForWeldButton(card.character),
+                  whiteSpace: 'nowrap',
+                  mt: { xs: 1, sm: 0 },
+                }}
+              >
+                HEGESZTÉS
+              </Button>
+            )}
+          </ListItem>
+        ))}
       </List>
       <PlayerSelectorStartButton hasWelder={hasWelder} weldedPlayers={weldedPlayers}/>
-    </div>
+    </Box>
   );
 }
 

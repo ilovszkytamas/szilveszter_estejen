@@ -1,4 +1,4 @@
-import { Button } from '@material-ui/core';
+import { Box, Button } from '@mui/material';
 import React from 'react';
 import { GameContext } from '../../store/GameContext';
 import { Alert } from '@mui/material';
@@ -50,18 +50,36 @@ const PlayerSelectorStartButton: React.FC<PlayerSelectorStartButtonProps> = (pro
       dispatch(changeGameStep(GameStep.PENDING_GAME));
     }
   }
-  
+
+  React.useEffect(() => {
+    setError({ hasError: false });
+  }, [props?.weldedPlayers])
+
   return (
-    <>
-      <Button variant='contained' onClick={startGame}>START</Button>
-      {error.hasError && error.errorType === PlayerSelectorStartButtonErrorType.MISSING_PLAYERS && <Alert severity='error'>
+    <Box sx={{ mt: 3, width: '100%', maxWidth: 400, mx: 'auto' }}>
+      <Button
+        variant="contained"
+        onClick={startGame}
+        fullWidth
+        sx={{ mb: 2 }}
+      >
+        START
+      </Button>
+
+      {error.hasError && error.errorType === PlayerSelectorStartButtonErrorType.MISSING_PLAYERS && (
+        <Alert severity="error" sx={{ mb: 2 }}>
           Játékosok hiányoznak ezekhez a karakterekhez: {missingCharacters.join(', ')}
-      </Alert>}
-      {error.hasError && error.errorType === PlayerSelectorStartButtonErrorType.WELDING_ERROR && <Alert severity='error'>
+        </Alert>
+      )}
+
+      {error.hasError && error.errorType === PlayerSelectorStartButtonErrorType.WELDING_ERROR && (
+        <Alert severity="error">
           Hegesztés hiba, jelenleg összehegesztett játékosok: {props?.weldedPlayers?.join(', ')}
-      </Alert>}
-    </>
+        </Alert>
+      )}
+    </Box>
   );
+  
 }
 
 export default PlayerSelectorStartButton;

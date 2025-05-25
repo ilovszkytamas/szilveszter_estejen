@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, Typography } from '@material-ui/core';
+import { Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, Typography } from '@mui/material';
 import React from 'react';
 import { GameContext } from '../../store/GameContext';
 import { AbilityType, CardData, Character, CharacterAbility } from '../../utils/Types';

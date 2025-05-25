@@ -1,8 +1,8 @@
-import React from 'react'
-import Card from '@material-ui/core/Card';
-import { CardData } from '../../utils/Types';
+import React from 'react';
+import { Card, Box, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { CardData } from '../../utils/Types';
 
 interface CharacterSelectorProps {
   cardData: CardData;
@@ -12,15 +12,48 @@ interface CharacterSelectorProps {
 
 const CharacterSelector: React.FC<CharacterSelectorProps> = (props) => {
   const { cardData, onPreviousClick, onNextClick } = props;
+
   return (
-    <div style={{  display: 'flex', flexDirection: 'row', alignItems: 'center', justifyItems: 'center' }}>
-      <ArrowBackIcon fontSize='large' onClick={onPreviousClick}/>
-      <Card >
-        <img style={{maxHeight: '80%', maxWidth: '80%'}} src={cardData.imageLocation} alt={cardData.imageLocation}/>
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        gap: 2,
+        width: '100%',
+        p: 2,
+      }}
+    >
+      <IconButton onClick={onPreviousClick} size="large">
+        <ArrowBackIcon fontSize="inherit" />
+      </IconButton>
+
+      <Card
+        sx={{
+          width: 'clamp(250px, 60vw, 500px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          p: 2,
+        }}
+      >
+        <img
+          src={cardData.imageLocation}
+          alt={cardData.imageLocation}
+          style={{
+            width: '100%',
+            height: 'auto',
+            objectFit: 'contain',
+          }}
+        />
       </Card>
-      <ArrowForwardIcon fontSize='large' onClick={onNextClick}/>
-    </div>
-  )
-}
+
+      <IconButton onClick={onNextClick} size="large">
+        <ArrowForwardIcon fontSize="inherit" />
+      </IconButton>
+    </Box>
+  );
+};
 
 export default CharacterSelector;

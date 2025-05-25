@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemText } from '@material-ui/core';
+import { Box, List, ListItem, ListItemText } from '@mui/material';
 import React from 'react'
 import { GameContext } from '../../store/GameContext';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -27,25 +27,23 @@ const SelectedCharacterList: React.FC = () => {
   }
 
   return (
-    <>
+    <Box>
       <label>Választott karakterek</label>
       <List>
-        {selectedCards.map((card) => {
-          return (
+        {selectedCards.map((card) => (
           <ListItem
             key={card.character}
-            style={{ backgroundColor: getBackgroundColor(card.faction)}}
+            sx={{ backgroundColor: getBackgroundColor(card.faction) }}
           >
             <ListItemText primary={card.character} />
             <ListItemSecondaryAction>
-              <DeleteIcon onClick={() => onDeleteClick(card.character || '')}/>
+              <DeleteIcon onClick={() => onDeleteClick(card.character || '')} />
             </ListItemSecondaryAction>
           </ListItem>
-          );
-        })}
+        ))}
       </List>
-    </>
-  )
+    </Box>
+  );
 }
 
 export default SelectedCharacterList;
