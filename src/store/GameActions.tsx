@@ -14,7 +14,8 @@ export enum GameAction {
   LOAD_GAME_STATE_FROM_LOCAL_STORAGE = 'LOAD_GAME_STATE_FROM_LOCAL_STORAGE',
   SET_DAY_COUNT = 'SET_DAY_COUNT',
   SET_TIME_OF_DAY = 'SET_TIME_OF_DAY',
-  SET_DEMON_DOSZPOD_ALREADY_DIED_ONCE_STATUS = 'SET_DEMON_DOSZPOD_ALREADY_DIED_ONCE_STATUS'
+  SET_DEMON_DOSZPOD_ALREADY_DIED_ONCE_STATUS = 'SET_DEMON_DOSZPOD_ALREADY_DIED_ONCE_STATUS',
+  SET_BOSSZUALLO_KILL_ENABLED_STATUS = 'SET_BOSSZUALLO_KILL_ENABLED_STATUS'
 }
 
 export const addCharacter = (payload: CardData): GameReducerActionType => ({
@@ -78,6 +79,12 @@ export const setTimeOfDay = (payload: TimeOfDay): GameReducerActionType => ({
   payload
 })
 
-export const setDemonDoszpodAlreadyDiedStatus = (): GameReducerActionType => ({
-  type: GameAction.SET_DEMON_DOSZPOD_ALREADY_DIED_ONCE_STATUS
+export const setDemonDoszpodAlreadyDiedStatus = (payload: boolean): GameReducerActionType => ({
+  type: GameAction.SET_DEMON_DOSZPOD_ALREADY_DIED_ONCE_STATUS,
+  payload
+})
+
+export const setBosszaualloKillEnabledStatus = (payload: boolean): GameReducerActionType => ({
+  type: GameAction.SET_BOSSZUALLO_KILL_ENABLED_STATUS,
+  payload
 })

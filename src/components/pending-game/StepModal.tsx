@@ -1,9 +1,9 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, Typography } from '@mui/material';
 import React from 'react';
 import { GameContext } from '../../store/GameContext';
-import { AbilityType, CardData, Character, CharacterAbility } from '../../utils/Types';
+import { AbilityType, CardData, Character, CharacterAbility, Faction } from '../../utils/Types';
 import useCharacterAction from '../../hooks/useCharacterAction';
-import { killCharacter, setDemonDoszpodAlreadyDiedStatus } from '../../store/GameActions';
+import { killCharacter, setBosszaualloKillEnabledStatus, setDemonDoszpodAlreadyDiedStatus } from '../../store/GameActions';
 import { DINOIDOMAR } from '../../utils/DataCollections';
 
 enum ModalState {
@@ -82,10 +82,14 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
       charactersMarkedForDeath = [...charactersMarkedForDeath, weldedOtherPair];
     }
 
+    if (charactersMarkedForDeath.find(card => card.effects.includes(AbilityType.BOSSZUALLO_KILL) && card.faction === Faction.VILLAGER)) {
+      dispatch(setBosszaualloKillEnabledStatus(false));
+    }
+
     const demonDoszpod = charactersMarkedForDeath.find(character => Character.DEMONDOSZPOD === character.character);
     if (demonDoszpod && !demonDoszpod?.hasDemonDoszpodAlreadyDiedOnce) {
       setCurrentKilledCharacters(charactersMarkedForDeath.filter(character => character.character !== Character.DEMONDOSZPOD));
-      dispatch(setDemonDoszpodAlreadyDiedStatus())
+      dispatch(setDemonDoszpodAlreadyDiedStatus(true))
     } else {
       setCurrentKilledCharacters(charactersMarkedForDeath);
     }
@@ -158,6 +162,10 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
     boxShadow: 24,
     p: 4,
   };
+
+  if (!getCurrentCharacter()) {
+    return <></>;
+  }
 
   return (
     <>

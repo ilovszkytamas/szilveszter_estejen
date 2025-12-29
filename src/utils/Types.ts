@@ -84,5 +84,20 @@ export type CardData = {
   effects: AbilityType[],
   actionDescription?: string,
   // like really, wtf
-  hasDemonDoszpodAlreadyDiedOnce?: boolean
+  hasDemonDoszpodAlreadyDiedOnce?: boolean,
+  isBosszualloKillEnabled?: boolean
+}
+
+export enum GameMasterActionType {
+  TOGGLE_ALIVE_STATUS = 'TOGGLE_ALIVE_STATUS',
+  TOGGLE_ABILITY_USED = 'TOGGLE_ABILITY_USED',
+  CHANGE_WELD_STATUS = 'CHANGE_WELD_STATUS',
+  RENAME_PLAYER = 'RENAME_PLAYER'
+}
+
+export interface LocalCharacterChangeData {
+  gameMasterActionType: GameMasterActionType,
+  newValue: boolean | number | Character[] | string
+  abilityType?: AbilityType,
+  character?: Character,
 }

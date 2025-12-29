@@ -80,7 +80,13 @@ export const gameReducer: GameReducerType = (prevState, action) => {
     case GameAction.SET_DEMON_DOSZPOD_ALREADY_DIED_ONCE_STATUS: {
       return {
         ...prevState,
-        selectedCards: prevState.selectedCards.map((card) => card.character === Character.DEMONDOSZPOD ? {...card, hasDemonDoszpodAlreadyDiedOnce: true} : card)
+        selectedCards: prevState.selectedCards.map((card) => card.character === Character.DEMONDOSZPOD ? {...card, hasDemonDoszpodAlreadyDiedOnce: action.payload} : card)
+      }
+    }
+    case GameAction.SET_BOSSZUALLO_KILL_ENABLED_STATUS: {
+      return {
+        ...prevState,
+        selectedCards: prevState.selectedCards.map((card) => card.character === Character.BOSSZUALLO ? {...card, isBosszualloKillEnabled: action.payload} : card)
       }
     }
     case GameAction.LOAD_GAME_STATE_FROM_LOCAL_STORAGE: return action.payload
