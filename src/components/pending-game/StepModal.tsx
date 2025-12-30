@@ -3,7 +3,8 @@ import React from 'react';
 import { GameContext } from '../../store/GameContext';
 import { AbilityType, CardData, Character, CharacterAbility, Faction } from '../../utils/Types';
 import useCharacterAction from '../../hooks/useCharacterAction';
-import { killCharacter, setBosszaualloKillEnabledStatus, setDemonDoszpodAlreadyDiedStatus } from '../../store/GameActions';
+import { finalizeNight } from '../../store/GameActions';
+import resolveNight from '../../utils/nightResolution';
 import { DINOIDOMAR } from '../../utils/DataCollections';
 
 enum ModalState {
@@ -28,13 +29,14 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
   const [availableTargets, setAvailableTargets] = React.useState<CardData[]>([]);
   const [currentTarget, setCurrentTarget] = React.useState<Character>();
   const [currentAbility, setCurrentAbility] = React.useState<AbilityType>();
-  const [currentKilledCharacters, setCurrentKilledCharacters] = React.useState<CardData[]>([]);
+  const [currentKilledCharacters, setCurrentKilledCharacters] = React.useState<Character[]>([]);
+  const [pendingResolution, setPendingResolution] = React.useState<any | null>(null);
   const [isNightConcluded, setNightConcluded] = React.useState<boolean>(false);
 
   const handleOpen = () => {
     setModalOpen(true);
   }
-  
+  console.log(state)
   const handleClose = () => {
     setModalOpen(false);
   }
@@ -56,47 +58,22 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
   }
 
   const handleConcludeNight = () => {
-    let charactersMarkedForDeath = selectedCards.filter(
-      card => card.effects.find(
-        effect => {
-          return effect === AbilityType.DONFATER_KILL
-            || effect === AbilityType.DEMOGORGON_KILL
-            || effect === AbilityType.BOSSZUALLO_KILL
-            || effect === AbilityType.FANATIKUS_KILL
-            || effect === AbilityType.ALKIMISTA_BOMBA
-        }
-      ) && !card.effects.find(
-        effect => {
-          return effect === AbilityType.ALKIMISTA_GYOGYITAL
-            || effect === AbilityType.ALKIMISTA_SZIKLABOR
-            || effect === AbilityType.DOKTOR_GYOGYITAS
-            || effect === AbilityType.TESTOR_VEDES
-        }
-      )
-    )
-
-    const weldedCharacter = charactersMarkedForDeath.find(character => character.isWelded);
-
-    if (weldedCharacter) {
-      const weldedOtherPair = selectedCards.find(card => card.isWelded && card.character !== weldedCharacter.character)!;
-      charactersMarkedForDeath = [...charactersMarkedForDeath, weldedOtherPair];
-    }
-
-    if (charactersMarkedForDeath.find(card => card.effects.includes(AbilityType.BOSSZUALLO_KILL) && card.faction === Faction.VILLAGER)) {
-      dispatch(setBosszaualloKillEnabledStatus(false));
-    }
-
-    const demonDoszpod = charactersMarkedForDeath.find(character => Character.DEMONDOSZPOD === character.character);
-    if (demonDoszpod && !demonDoszpod?.hasDemonDoszpodAlreadyDiedOnce) {
-      setCurrentKilledCharacters(charactersMarkedForDeath.filter(character => character.character !== Character.DEMONDOSZPOD));
-      dispatch(setDemonDoszpodAlreadyDiedStatus(true))
-    } else {
-      setCurrentKilledCharacters(charactersMarkedForDeath);
-    }
-    setNightConcluded(true);
-    if (charactersMarkedForDeath?.find(character => Character.DINOIDOMAR === character.character)) {
+    // Use centralized resolver to compute the authoritative night resolution
+    const provisional = resolveNight(state);
+    // If Dínóidomár is among the kills, pause to let the Dínóidomár choose its victim
+    if (provisional.kills.includes(Character.DINOIDOMAR)) {
+      // show killed characters excluding Dínóidomár until the player picks a target
+      setCurrentKilledCharacters(provisional.kills.filter(kill => kill !== Character.DINOIDOMAR));
+      setPendingResolution(provisional);
       setCurrentModalState(ModalState.DINOIDOMAR_DEAD);
+      setNightConcluded(true);
+      return;
     }
+
+    // no Dínóidomár special-case: apply result immediately
+    dispatch(finalizeNight(provisional));
+    setCurrentKilledCharacters(provisional.kills);
+    setNightConcluded(true);
   }
 
   const handleCharacterAction = (abilityType: AbilityType) => {
@@ -105,7 +82,7 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
     if (abilityType === AbilityType.ALKIMISTA_SZIKLABOR) {
       setAvailableTargets([selectedCards.find(card => card.character === Character.KOTYVASZTÓ1 || card.character === Character.KOTYVASZTÓ2)!])
     } else {
-      setAvailableTargets(selectedCards);
+      setAvailableTargets(selectedCards.filter(card => card.isAlive));
     }
   }
 
@@ -114,16 +91,14 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
   }
 
   const handleWakeUp = () => {
-    if (currentKilledCharacters) {
-      currentKilledCharacters.forEach(character => dispatch(killCharacter(character.character)));
-    }
     setModalOpen(false);
     setCurrentKilledCharacters([]);
     setNightConcluded(false);
     props.onWakeUp();
   }
 
-  const isAbilityButtonDisabled = (characterAbility: CharacterAbility): boolean => {
+  const isAbilityButtonDisabled = (characterAbility: CharacterAbility, card: CardData): boolean => {
+    console.log(card);
     if (characterAbility.abilityType === AbilityType.ALKIMISTA_BOMBA && characterAbility.usageCountTotal >= 1) {
       return true;
     }
@@ -131,6 +106,9 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
       return true;
     }
     else if (characterAbility.abilityType === AbilityType.ALKIMISTA_SZIKLABOR && characterAbility.usageCountTotal >= 1) {
+      return true;
+    }
+    else if (card.character === Character.BOSSZUALLO && !card.isBosszualloKillEnabled) {
       return true;
     } else {
       return false;
@@ -142,13 +120,32 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
   }
 
   const dinoidomarSelect = () => {
-    let currentTargetCard: CardData = selectedCards.find(card => card.character === currentTarget)!;
-    let refreshedCurrentKilledCharacterList: CardData[] = [...currentKilledCharacters, currentTargetCard];
-    if (currentTargetCard.isWelded) {
-      const weldedOtherPair = selectedCards.find(card => card.isWelded && card.character !== currentTarget)!;
-      refreshedCurrentKilledCharacterList = [...refreshedCurrentKilledCharacterList, weldedOtherPair];
+    if (!currentTarget) return;
+    // If we have a pending provisional resolution, apply the Dínóidomár choice to it
+    if (pendingResolution) {
+      const chosen = currentTarget as Character;
+      // start from provisional updatedSelectedCards
+      let finalUpdated = pendingResolution.updatedSelectedCards.map((c: CardData) => ({ ...c }));
+      const toKill = new Set<Character>();
+      toKill.add(Character.DINOIDOMAR);
+      toKill.add(chosen);
+      // include welded partner if applicable
+      const chosenCard = finalUpdated.find((c: CardData) => c.character === chosen);
+      if (chosenCard?.isWelded) {
+        const weldedOther = finalUpdated.find((c: CardData) => c.isWelded && c.character !== chosen);
+        if (weldedOther) toKill.add(weldedOther.character);
+      }
+
+      finalUpdated = finalUpdated.map((c: CardData) => toKill.has(c.character) ? { ...c, isAlive: false } : c);
+      const killsArray = Array.from(toKill);
+      const finalResult = { updatedSelectedCards: finalUpdated, kills: killsArray };
+      dispatch(finalizeNight(finalResult));
+      setCurrentKilledCharacters(killsArray);
+      setPendingResolution(null);
+      setCurrentModalState(ModalState.CONCLUDE_NIGHT);
+      setNightConcluded(true);
+      return;
     }
-    setCurrentKilledCharacters(refreshedCurrentKilledCharacterList);
   }
 
   const style = {
@@ -184,8 +181,8 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
             <Typography id="modal-modal-title" variant="h6" component="h2" style={{ textAlign: 'center', marginBottom: '30px' }}>
               {!isNightConcluded && <Button type={'submit'} onClick={handleConcludeNight} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>ÉJSZAKA LEZÁRÁSA</Button>}
             </Typography>
-            {currentKilledCharacters && <>Megölt karakterek: {currentKilledCharacters.map(card => (card.character)).join(", ")}</>}
-            {isNightConcluded && <Button onClick={handleWakeUp} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>REGGEL MEGKEZDÉSE, TIME TO HANG SOMEONE</Button>}
+            {isNightConcluded && currentKilledCharacters && <>Megölt karakterek: {currentKilledCharacters.join(", ")}</>}
+            {isNightConcluded && !pendingResolution && <Button onClick={handleWakeUp} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>REGGEL MEGKEZDÉSE, TIME TO HANG SOMEONE</Button>}
           </>}
           {
             currentModalState === ModalState.PENDING_NIGHT && <>
@@ -193,8 +190,8 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
                 {getCurrentCharacter().isAlive ? "[ÉLŐ]" : "[DEAD]"} {getCurrentCharacter().actionDescription}
               </Typography>
               <Typography id="modal-modal-description" style={{ display: 'flex' }}>
-                {finalisedOrder[currentIndex].abilities?.map((ability) => {
-                  return (<Button disabled={!getCurrentCharacter().isAlive || isAbilityButtonDisabled(ability)} onClick={() => handleCharacterAction(ability.abilityType)} style={{ backgroundColor: 'black', color: 'white', marginRight: '10px', textDecorationLine: !getCurrentCharacter().isAlive || isAbilityButtonDisabled(ability) ? 'line-through' : 'none' }}>{ability.abilityType}</Button>)
+                {getCurrentCharacter().abilities?.map((ability) => {
+                  return (<Button disabled={!getCurrentCharacter().isAlive || isAbilityButtonDisabled(ability, getCurrentCharacter())} onClick={() => handleCharacterAction(ability.abilityType)} style={{ backgroundColor: 'black', color: 'white', marginRight: '10px', textDecorationLine: !getCurrentCharacter().isAlive || isAbilityButtonDisabled(ability, getCurrentCharacter()) ? 'line-through' : 'none' }}>{ability.abilityType}</Button>)
                 })}
               </Typography>
               {isTargetSelectorOpen && <div>
@@ -222,7 +219,7 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
               </Typography>
               <Typography id="modal-modal-description" style={{ display: 'flex' }}>
                 {DINOIDOMAR.abilities?.map((ability) => {
-                  return (<Button disabled={!currentTarget} onClick={dinoidomarSelect} style={{ backgroundColor: 'black', color: 'white', marginRight: '10px', textDecorationLine: !getCurrentCharacter().isAlive || isAbilityButtonDisabled(ability) ? 'line-through' : 'none' }}>{ability.abilityType}</Button>)
+                  return (<Button disabled={!currentTarget} onClick={dinoidomarSelect} style={{ backgroundColor: 'black', color: 'white', marginRight: '10px', textDecorationLine: !getCurrentCharacter().isAlive || isAbilityButtonDisabled(ability, finalisedOrder[currentIndex]) ? 'line-through' : 'none' }}>{ability.abilityType}</Button>)
                 })}
               </Typography>
               {<div>
@@ -235,12 +232,16 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
                     onChange={handleTargetChange}
                   >
                     {selectedCards.map(target => {
-                      return (<MenuItem value={target.character}>{target.character + '-' + target.playerName}</MenuItem>)
+                      if (target.isAlive && target.character !== getCurrentCharacter().character) {
+                        return (<MenuItem value={target.character}>{target.character + '-' + target.playerName}</MenuItem>)
+                      }
                     })}
                   </Select>
                 </FormControl>
               </div>}
-              {isNightConcluded && <Button onClick={handleWakeUp} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>REGGEL MEGKEZDÉSE, TIME TO HANG SOMEONE</Button>}
+              {/* Confirm button for Dínóidomár so user doesn't get stuck after selecting a target */}
+              {pendingResolution && currentTarget && <Button onClick={dinoidomarSelect} style={{ backgroundColor: 'orange', color: 'black', marginTop: '10px' }}>DÍNÓIDOMÁR DÖNTÉS VÉGLEGESÍTÉS</Button>}
+              {isNightConcluded && !pendingResolution && <Button onClick={handleWakeUp} style={{ backgroundColor: 'red', color: 'white', marginTop: '30px' }}>REGGEL MEGKEZDÉSE, TIME TO HANG SOMEONE</Button>}
             </>
           }
         </Box>

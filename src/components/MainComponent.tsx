@@ -35,7 +35,7 @@ const MainComponent: React.FC = () => {
   return (
     <>
       {currentComponent}
-      {gameStep !== GameStep.GAME_MASTER && <Button onClick={onGameMasterClick} style={{backgroundColor: 'purple', marginTop: '100px'}}>JÁTÉKMESTER MÓD</Button>}
+      {gameStep === GameStep.PENDING_GAME && <Button onClick={onGameMasterClick} style={{backgroundColor: 'purple', marginTop: '100px'}}>JÁTÉKMESTER MÓD</Button>}
     </>
   );
 }

@@ -1,5 +1,6 @@
 import { AbilityType, CardData, Character, GameStep, TimeOfDay } from "../utils/Types";
 import { GameReducerActionType, GameStateType } from "./GameContext";
+import type { NightResolutionResult } from '../utils/nightResolution';
 
 export enum GameAction {
   ADD_CHARACTER = 'ADD_CHARACTER',
@@ -16,6 +17,9 @@ export enum GameAction {
   SET_TIME_OF_DAY = 'SET_TIME_OF_DAY',
   SET_DEMON_DOSZPOD_ALREADY_DIED_ONCE_STATUS = 'SET_DEMON_DOSZPOD_ALREADY_DIED_ONCE_STATUS',
   SET_BOSSZUALLO_KILL_ENABLED_STATUS = 'SET_BOSSZUALLO_KILL_ENABLED_STATUS'
+  ,NIGHT_RESOLVED = 'NIGHT_RESOLVED'
+  ,SET_ALIVE_STATUS = 'SET_ALIVE_STATUS'
+  ,SET_ABILITY_USAGE = 'SET_ABILITY_USAGE'
 }
 
 export const addCharacter = (payload: CardData): GameReducerActionType => ({
@@ -86,5 +90,20 @@ export const setDemonDoszpodAlreadyDiedStatus = (payload: boolean): GameReducerA
 
 export const setBosszaualloKillEnabledStatus = (payload: boolean): GameReducerActionType => ({
   type: GameAction.SET_BOSSZUALLO_KILL_ENABLED_STATUS,
+  payload
+})
+
+export const finalizeNight = (payload: NightResolutionResult): GameReducerActionType => ({
+  type: GameAction.NIGHT_RESOLVED,
+  payload
+})
+
+export const setAliveStatus = (payload: { character: Character; isAlive: boolean }): GameReducerActionType => ({
+  type: GameAction.SET_ALIVE_STATUS,
+  payload
+})
+
+export const setAbilityUsage = (payload: { character: Character; abilityType: AbilityType; newValue: number }): GameReducerActionType => ({
+  type: GameAction.SET_ABILITY_USAGE,
   payload
 })

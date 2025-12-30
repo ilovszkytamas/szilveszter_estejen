@@ -6,7 +6,7 @@ interface Props {
   open: boolean;
   selectedCards: CardData[];
   onClose: () => void;
-  onConfirm: (payload: { character: Character; abilityKey: AbilityType; newValue: number }) => void;
+  onConfirm: (payload: { character: Character; abilityKey: AbilityType; newValue: number | boolean }) => void;
 }
 
 const style = {
@@ -133,13 +133,13 @@ const AbilityUsageModal: React.FC<Props> = ({ open, selectedCards, onClose, onCo
             }
 
             if (isBosszu) {
-              onConfirm({ character: card.character, abilityKey: AbilityType.BOSSZUALLO_KILL, newValue: bosszuEnabled ? 1 : 0 });
+              onConfirm({ character: card.character, abilityKey: AbilityType.BOSSZUALLO_KILL, newValue: bosszuEnabled ? true : false });
               onClose();
               return;
             }
 
             if (isDemon) {
-              onConfirm({ character: card.character, abilityKey: AbilityType.DEMONDOSZPOD_TULELES, newValue: demonDiedOnce ? 1 : 0 });
+              onConfirm({ character: card.character, abilityKey: AbilityType.DEMONDOSZPOD_TULELES, newValue: demonDiedOnce ? true : false });
               onClose();
               return;
             }

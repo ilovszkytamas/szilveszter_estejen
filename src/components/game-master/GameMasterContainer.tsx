@@ -1,8 +1,8 @@
-import { Box, Button, List, ListItem, ListItemText, Checkbox, TextField } from '@mui/material'
+import { Button, List, ListItem, ListItemText, Checkbox, TextField } from '@mui/material'
 import React from "react";
 import { GameContext } from "../../store/GameContext";
-import { AbilityType, CardData, Character, GameMasterActionType, GameStep, LocalCharacterChangeData } from "../../utils/Types";
-import { changeGameStep } from "../../store/GameActions";
+import { AbilityType, Character, GameMasterActionType, GameStep, LocalCharacterChangeData } from "../../utils/Types";
+import { changeGameStep, assignPlayerToCharacter, finaliseWelding, setAliveStatus, setAbilityUsage, setBosszaualloKillEnabledStatus, setDemonDoszpodAlreadyDiedStatus } from "../../store/GameActions";
 import NewGameModal from './NewGameModal'
 import WeldChangeModal from './WeldChangeModal'
 import AbilityUsageModal from './AbilityUsageModal'
@@ -10,7 +10,6 @@ import ReviewChangesModal from './ReviewChangesModal'
 
 const GameMasterContainer: React.FC = () => {
   const { state, dispatch } = React.useContext(GameContext);
-  const { gameStep } = state;
   const { selectedCards } = state;
   const [localCharacterChanges, setLocalCharacterChanges] = React.useState<LocalCharacterChangeData[]>([]);
   const [weldModalOpen, setWeldModalOpen] = React.useState<boolean>(false);
@@ -92,7 +91,7 @@ const GameMasterContainer: React.FC = () => {
     console.log('Weld change confirmed', pair);
   };
 
-  const handleAbilityConfirm = (payload: { character: Character; abilityKey: AbilityType; newValue: number }) => {
+  const handleAbilityConfirm = (payload: { character: Character; abilityKey: AbilityType; newValue: number | boolean }) => {
     const characterChangeData: LocalCharacterChangeData = {
       character: payload.character,
       abilityType: payload.abilityKey,
@@ -105,7 +104,39 @@ const GameMasterContainer: React.FC = () => {
 
   const handleReviewConfirm = (changes: LocalCharacterChangeData[]) => {
     console.log('Applying changes:', changes);
-    // TODO: apply changes to game state / dispatch actions here
+    for (const c of changes) {
+      switch (c.gameMasterActionType) {
+        case GameMasterActionType.RENAME_PLAYER:
+          if (c.character && typeof c.newValue === 'string') {
+            dispatch(assignPlayerToCharacter([c.character, c.newValue]));
+          }
+          break;
+        case GameMasterActionType.TOGGLE_ALIVE_STATUS:
+          if (c.character && typeof c.newValue === 'boolean') {
+            dispatch(setAliveStatus({ character: c.character, isAlive: c.newValue }));
+          }
+          break;
+        case GameMasterActionType.CHANGE_WELD_STATUS:
+          if (Array.isArray(c.newValue)) {
+            dispatch(finaliseWelding(c.newValue as Character[]));
+          }
+          break;
+        case GameMasterActionType.TOGGLE_ABILITY_USED:
+          if (c.character && c.abilityType && typeof c.newValue === 'number') {
+            dispatch(setAbilityUsage({ character: c.character, abilityType: c.abilityType, newValue: c.newValue }));
+          } else if (c.character && c.abilityType && typeof c.newValue === 'boolean') {
+            if (c.abilityType === AbilityType.BOSSZUALLO_KILL) {
+              dispatch(setBosszaualloKillEnabledStatus(c.newValue));
+            }
+            else if (c.abilityType === AbilityType.DEMONDOSZPOD_TULELES) {
+              dispatch(setDemonDoszpodAlreadyDiedStatus(c.newValue));
+            }
+          }
+          break;
+        default:
+          console.warn('Unhandled game master change:', c);
+      }
+    }
     setLocalCharacterChanges([]);
     setReviewModalOpen(false);
   };

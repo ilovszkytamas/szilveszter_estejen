@@ -1,3 +1,4 @@
+import { NightResolutionResult } from "../utils/nightResolution";
 import { AbilityType, CardData, Character } from "../utils/Types";
 import { GameAction } from "./GameActions";
 import { GameReducerType } from "./GameContext";
@@ -54,7 +55,7 @@ export const gameReducer: GameReducerType = (prevState, action) => {
         selectedCards: prevState.selectedCards.map((card) => {
           return {
             ...card,
-            effects: card.character === Character.DEMONDOSZPOD && !card.hasDemonDoszpodAlreadyDiedOnce ? [AbilityType.DEMONDOSZPOD_TULELES] : []
+            effects: []
           }
         })
       }
@@ -88,6 +89,35 @@ export const gameReducer: GameReducerType = (prevState, action) => {
         ...prevState,
         selectedCards: prevState.selectedCards.map((card) => card.character === Character.BOSSZUALLO ? {...card, isBosszualloKillEnabled: action.payload} : card)
       }
+    }
+    case GameAction.SET_ALIVE_STATUS: {
+      const payload = action.payload as { character: Character; isAlive: boolean };
+      return {
+        ...prevState,
+        selectedCards: prevState.selectedCards.map((card) => card.character === payload.character ? { ...card, isAlive: payload.isAlive } : card)
+      }
+    }
+    case GameAction.SET_ABILITY_USAGE: {
+      const payload = action.payload as { character: Character; abilityType: any; newValue: number };
+      return {
+        ...prevState,
+        selectedCards: prevState.selectedCards.map((card) => {
+          if (card.character !== payload.character) return card;
+          const abilities = card.abilities?.map(a => a.abilityType === payload.abilityType ? { ...a, usageCountTotal: payload.newValue } : a) ?? [];
+          return { ...card, abilities } as CardData;
+        })
+      }
+    }
+    case GameAction.NIGHT_RESOLVED: {
+      const payload = action.payload as NightResolutionResult;
+      if (payload?.updatedSelectedCards) {
+        return {
+          ...prevState,
+          selectedCards: payload.updatedSelectedCards
+        }
+      }
+
+      return prevState;
     }
     case GameAction.LOAD_GAME_STATE_FROM_LOCAL_STORAGE: return action.payload
     default: return prevState;
