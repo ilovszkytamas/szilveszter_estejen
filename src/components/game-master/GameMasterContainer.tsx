@@ -1,8 +1,8 @@
-import { Button, List, ListItem, ListItemText, Checkbox, TextField } from '@mui/material'
+import { Button, List, ListItem, ListItemText, Checkbox, TextField, Modal, Box, Typography } from '@mui/material'
 import React from "react";
 import { GameContext } from "../../store/GameContext";
 import { AbilityType, Character, GameMasterActionType, GameStep, LocalCharacterChangeData } from "../../utils/Types";
-import { changeGameStep, assignPlayerToCharacter, finaliseWelding, setAliveStatus, setAbilityUsage, setBosszaualloKillEnabledStatus, setDemonDoszpodAlreadyDiedStatus } from "../../store/GameActions";
+import { changeGameStep, assignPlayerToCharacter, finaliseWelding, setAliveStatus, setAbilityUsage, setBosszaualloKillEnabledStatus, setDemonDoszpodAlreadyDiedStatus, hitAbility } from "../../store/GameActions";
 import NewGameModal from './NewGameModal'
 import WeldChangeModal from './WeldChangeModal'
 import AbilityUsageModal from './AbilityUsageModal'
@@ -14,6 +14,7 @@ const GameMasterContainer: React.FC = () => {
   const [localCharacterChanges, setLocalCharacterChanges] = React.useState<LocalCharacterChangeData[]>([]);
   const [weldModalOpen, setWeldModalOpen] = React.useState<boolean>(false);
   const [abilityModalOpen, setAbilityModalOpen] = React.useState<boolean>(false);
+  const [teknosModalOpen, setTeknosModalOpen] = React.useState<boolean>(false);
   const [reviewModalOpen, setReviewModalOpen] = React.useState<boolean>(false);
 
   const onNewGameClick = () => {
@@ -81,6 +82,17 @@ const GameMasterContainer: React.FC = () => {
   const onWeldChangeClick = () => setWeldModalOpen(true);
 
   const onAbilityUsageChangeClick = () => setAbilityModalOpen(true);
+
+  const onTeknosAbilityClick = () => setTeknosModalOpen(true);
+
+  const handleTeknosConfirm = () => {
+    const teknosCard = selectedCards.find(c => c.character === Character.TEKNOS);
+    if (!teknosCard) return;
+    const currentUsage = teknosCard.abilities?.find(a => a.abilityType === AbilityType.TEKNOS_CIGI)?.usageCountTotal ?? 0;
+    dispatch(hitAbility([Character.TEKNOS, AbilityType.TEKNOS_CIGI, Character.TEKNOS]));
+    console.log('TEKNOS ability used, new usage:', currentUsage + 1);
+    setTeknosModalOpen(false);
+  };
 
   const handleWeldConfirm = (pair: { first: Character; second: Character }) => {
     const characterChangeData: LocalCharacterChangeData = {
@@ -179,6 +191,7 @@ const GameMasterContainer: React.FC = () => {
       </div>
       <Button onClick={onWeldChangeClick} disabled={!selectedCards.find(card => card.character === Character.HEGESZTO1 || card.character === Character.HEGESZTO2)} style={{backgroundColor: 'purple', marginTop: '100px', marginRight: '50px'}}>HEGESZTÉS MEGVÁLTOZATÁSA</Button>
       <Button onClick={onAbilityUsageChangeClick} style={{backgroundColor: 'purple', marginTop: '100px', marginRight: '50px'}}>ABILITY HASZNÁLAT VÁLTOZTATÁS</Button>
+      <Button onClick={onTeknosAbilityClick} disabled={!selectedCards.find(card => card.character === Character.TEKNOS)} style={{backgroundColor: 'purple', marginTop: '100px', marginRight: '50px'}}>TEKNŐS ABILITY</Button>
       <Button onClick={onBackClick} style={{backgroundColor: 'purple', marginTop: '100px', marginRight: '50px'}}>VISSZA A JÁTÉKBA</Button>
       <Button onClick={onSaveClick} style={{backgroundColor: 'purple', marginTop: '100px'}}>MENTÉS</Button>
       <br />
@@ -200,6 +213,24 @@ const GameMasterContainer: React.FC = () => {
         onClose={() => setAbilityModalOpen(false)}
         onConfirm={handleAbilityConfirm}
       />
+
+      <Modal open={teknosModalOpen} onClose={() => setTeknosModalOpen(false)}>
+        <Box sx={{ position: 'absolute' as 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
+          <Typography variant="h6" style={{ textAlign: 'center', marginBottom: 12 }}>TEKNŐS ABILITY</Typography>
+          <Typography variant="body1" style={{ marginBottom: 12 }}>A teknős egy játékban egyszer elszívhat egy cigit, ez miatt az adott éjszakát túléli</Typography>
+          <Typography variant="body1" style={{ marginBottom: 12 }}>
+            {(() => {
+              const teknos = selectedCards.find(c => c.character === Character.TEKNOS);
+              const usage = teknos?.abilities?.find(a => a.abilityType === AbilityType.TEKNOS_CIGI)?.usageCountTotal ?? 0;
+              return `Használatok száma: ${usage}`;
+            })()}
+          </Typography>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 12 }}>
+            <Button variant="contained" color="primary" onClick={handleTeknosConfirm}>ALKALMAZ</Button>
+            <Button variant="outlined" onClick={() => setTeknosModalOpen(false)}>MÉGSE</Button>
+          </div>
+        </Box>
+      </Modal>
 
       <ReviewChangesModal
         open={reviewModalOpen}

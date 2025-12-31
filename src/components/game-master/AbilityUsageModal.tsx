@@ -25,7 +25,7 @@ const AbilityUsageModal: React.FC<Props> = ({ open, selectedCards, onClose, onCo
   const [selectedCharacter, setSelectedCharacter] = React.useState<Character | ''>('');
   const [abilityKey, setAbilityKey] = React.useState<AbilityType | ''>('');
   const [value, setValue] = React.useState<number>(0);
-  const [bosszuEnabled, setBosszuEnabled] = React.useState<boolean>(true);
+  const [bosszuEnabled, setBosszuEnabled] = React.useState<boolean>(false);
   const [demonDiedOnce, setDemonDiedOnce] = React.useState<boolean>(false);
 
   const allowed = selectedCards.filter(c =>
@@ -44,6 +44,13 @@ const AbilityUsageModal: React.FC<Props> = ({ open, selectedCards, onClose, onCo
   const getUsage = (type: AbilityType) => {
     return selectedCard?.abilities?.find(a => a.abilityType === type)?.usageCountTotal ?? 0;
   };
+
+  React.useEffect(() => {
+    if (!open) return;
+    setBosszuEnabled(selectedCards.find(c => c.character === Character.BOSSZUALLO)?.isBosszualloKillEnabled ?? false);
+    setDemonDiedOnce(selectedCards.find(c => c.character === Character.DEMONDOSZPOD)?.hasDemonDoszpodAlreadyDiedOnce ?? false);
+    console.log("set values for demon and bosszu if applicable");
+  }, [open, selectedCards]);
 
   return (
     <Modal open={open} onClose={onClose}>

@@ -24,7 +24,8 @@ const healAbilities = new Set<AbilityType>([
   AbilityType.ALKIMISTA_GYOGYITAL,
   AbilityType.ALKIMISTA_SZIKLABOR,
   AbilityType.DOKTOR_GYOGYITAS,
-  AbilityType.TESTOR_VEDES
+  AbilityType.TESTOR_VEDES,
+  AbilityType.TEKNOS_CIGI
 ]);
 
 export function resolveNight(gameState: GameStateType, overrides?: NightOverrides): NightResolutionResult {

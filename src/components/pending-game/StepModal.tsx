@@ -76,6 +76,35 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
     setNightConcluded(true);
   }
 
+  const dinoidomarSelect = () => {
+    if (!currentTarget) return;
+    // If we have a pending provisional resolution, apply the Dínóidomár choice to it
+    if (pendingResolution) {
+      const chosen = currentTarget as Character;
+      // start from provisional updatedSelectedCards
+      let finalUpdated = pendingResolution.updatedSelectedCards.map((c: CardData) => ({ ...c }));
+      const toKill = new Set<Character>();
+      toKill.add(Character.DINOIDOMAR);
+      toKill.add(chosen);
+      // include welded partner if applicable
+      const chosenCard = finalUpdated.find((c: CardData) => c.character === chosen);
+      if (chosenCard?.isWelded) {
+        const weldedOther = finalUpdated.find((c: CardData) => c.isWelded && c.character !== chosen);
+        if (weldedOther) toKill.add(weldedOther.character);
+      }
+
+      finalUpdated = finalUpdated.map((c: CardData) => toKill.has(c.character) ? { ...c, isAlive: false } : c);
+      const killsArray = Array.from(toKill);
+      const finalResult = { updatedSelectedCards: finalUpdated, kills: killsArray };
+      dispatch(finalizeNight(finalResult));
+      setCurrentKilledCharacters(killsArray);
+      setPendingResolution(null);
+      setCurrentModalState(ModalState.CONCLUDE_NIGHT);
+      setNightConcluded(true);
+      return;
+    }
+  }
+
   const handleCharacterAction = (abilityType: AbilityType) => {
     setTargetSelectorOpen(true);
     setCurrentAbility(abilityType);
@@ -117,35 +146,6 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
 
   const getCurrentCharacter = (): CardData => {
     return selectedCards.find(card => card.character === finalisedOrder[currentIndex].character)!;
-  }
-
-  const dinoidomarSelect = () => {
-    if (!currentTarget) return;
-    // If we have a pending provisional resolution, apply the Dínóidomár choice to it
-    if (pendingResolution) {
-      const chosen = currentTarget as Character;
-      // start from provisional updatedSelectedCards
-      let finalUpdated = pendingResolution.updatedSelectedCards.map((c: CardData) => ({ ...c }));
-      const toKill = new Set<Character>();
-      toKill.add(Character.DINOIDOMAR);
-      toKill.add(chosen);
-      // include welded partner if applicable
-      const chosenCard = finalUpdated.find((c: CardData) => c.character === chosen);
-      if (chosenCard?.isWelded) {
-        const weldedOther = finalUpdated.find((c: CardData) => c.isWelded && c.character !== chosen);
-        if (weldedOther) toKill.add(weldedOther.character);
-      }
-
-      finalUpdated = finalUpdated.map((c: CardData) => toKill.has(c.character) ? { ...c, isAlive: false } : c);
-      const killsArray = Array.from(toKill);
-      const finalResult = { updatedSelectedCards: finalUpdated, kills: killsArray };
-      dispatch(finalizeNight(finalResult));
-      setCurrentKilledCharacters(killsArray);
-      setPendingResolution(null);
-      setCurrentModalState(ModalState.CONCLUDE_NIGHT);
-      setNightConcluded(true);
-      return;
-    }
   }
 
   const style = {
@@ -218,9 +218,6 @@ export const StepModal: React.FC<StepModalProps> = (props) => {
                 {DINOIDOMAR.actionDescription}
               </Typography>
               <Typography id="modal-modal-description" style={{ display: 'flex' }}>
-                {DINOIDOMAR.abilities?.map((ability) => {
-                  return (<Button disabled={!currentTarget} onClick={dinoidomarSelect} style={{ backgroundColor: 'black', color: 'white', marginRight: '10px', textDecorationLine: !getCurrentCharacter().isAlive || isAbilityButtonDisabled(ability, finalisedOrder[currentIndex]) ? 'line-through' : 'none' }}>{ability.abilityType}</Button>)
-                })}
               </Typography>
               {<div>
                 <FormControl style={{ width: '300px', marginBottom: '10px', marginTop: '10px' }}>
