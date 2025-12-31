@@ -189,14 +189,14 @@ const GameMasterContainer: React.FC = () => {
           })}
         </List>
       </div>
-      <Button onClick={onWeldChangeClick} disabled={!selectedCards.find(card => card.character === Character.HEGESZTO1 || card.character === Character.HEGESZTO2)} style={{backgroundColor: 'purple', marginTop: '100px', marginRight: '50px'}}>HEGESZTÉS MEGVÁLTOZATÁSA</Button>
-      <Button onClick={onAbilityUsageChangeClick} style={{backgroundColor: 'purple', marginTop: '100px', marginRight: '50px'}}>ABILITY HASZNÁLAT VÁLTOZTATÁS</Button>
-      <Button onClick={onTeknosAbilityClick} disabled={!selectedCards.find(card => card.character === Character.TEKNOS)} style={{backgroundColor: 'purple', marginTop: '100px', marginRight: '50px'}}>TEKNŐS ABILITY</Button>
-      <Button onClick={onBackClick} style={{backgroundColor: 'purple', marginTop: '100px', marginRight: '50px'}}>VISSZA A JÁTÉKBA</Button>
-      <Button onClick={onSaveClick} style={{backgroundColor: 'purple', marginTop: '100px'}}>MENTÉS</Button>
+      <Button onClick={onWeldChangeClick} disabled={!selectedCards.find(card => card.character === Character.HEGESZTO1 || card.character === Character.HEGESZTO2)} style={{backgroundColor: !selectedCards.find(card => card.character === Character.HEGESZTO1 || card.character === Character.HEGESZTO2) ? 'gray' : 'purple', marginTop: '100px', marginRight: '50px', color: 'white'}}>HEGESZTÉS MEGVÁLTOZATÁSA</Button>
+      <Button onClick={onAbilityUsageChangeClick} style={{backgroundColor: 'purple', marginTop: '100px', marginRight: '50px', color: 'white'}}>ABILITY HASZNÁLAT VÁLTOZTATÁS</Button>
+      <Button onClick={onTeknosAbilityClick} disabled={!selectedCards.find(card => card.character === Character.TEKNOS)} style={{backgroundColor: !selectedCards.find(card => card.character === Character.TEKNOS) ? 'gray' : 'purple', marginTop: '100px', marginRight: '50px', color: 'white'}}>TEKNŐS ABILITY</Button>
+      <Button onClick={onBackClick} style={{backgroundColor: 'purple', marginTop: '100px', marginRight: '50px', color: 'white'}}>VISSZA A JÁTÉKBA</Button>
+      <Button onClick={onSaveClick} style={{backgroundColor: 'purple', marginTop: '100px', color: 'white'}}>MENTÉS</Button>
       <br />
       <NewGameModal
-        buttonStyle={{ backgroundColor: 'purple', marginTop: '100px' }}
+        buttonStyle={{ backgroundColor: 'purple', marginTop: '100px', color: 'white' }}
         onConfirm={onNewGameClick}
       />
 
